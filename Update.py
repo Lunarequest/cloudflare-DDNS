@@ -32,5 +32,10 @@ def get_zone_ip(zone, domain):
 
 
 def check(cf, zone_id):
+    dns_records = cf.zones.dns_records.get(zone_id)
     current_ip = requests.get("http://ip.42.pl/raw").text
+    if current_ip == dns_records["conntent"]:
+        print("ip is up to date")
+    else:
+        dns_records = cf.zones.dns_records.put("")
 
