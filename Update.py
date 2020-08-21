@@ -1,8 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/pyth
 from requests import get
 import yaml
 import CloudFlare
 import sys
+import os
 
 
 def get_zone_ip(zone, domain):
@@ -30,15 +31,20 @@ def check(zone_id):
 
 
 def update():
-    with open("settings.yml", "r") as f:
-        data = f.read()
-        creds = yaml.full_load(data)
-        f.close()
-    email = creds["email"]
-    api_key = creds["api_key"]
-    domain = creds["domain"]
-    global cf
-    cf = CloudFlare.CloudFlare(email=email, token=api_key)
+    path = os.path.expanduser("~/.local")
+    try:
+        with open(f"{path}/settings.yml", "r") as f:
+            data = f.read()
+            creds = yaml.full_load(data)
+            f.close()
+        email = creds["email"]
+        api_key = creds["api_key"]
+        domain = creds["domain"]
+        global cf
+        cf = CloudFlare.CloudFlare(email=email, token=api_key)
+    except:
+        print("failed to open config")
+        sys.exit(1)
 
     zone = None
     ip = None
@@ -54,6 +60,7 @@ def update():
     print(message)
     zone_id = get_zone_ip(zones, domain)
     check(cf, zone_id)
+
 
 if __name__ == "__main__":
     pass

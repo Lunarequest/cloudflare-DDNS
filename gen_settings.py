@@ -1,4 +1,5 @@
 import yaml
+import os
 
 
 def gen_settings():
@@ -8,7 +9,8 @@ def gen_settings():
 
     creds = {"email": email, "api_key": api_key, "domain": domain}
     x = yaml.dump(creds)
-    with open("settings.yml", "w") as f:
+    path = os.path.expanduser("~/.local")
+    with open(f"{path}/settings.yml", "w") as f:
         f.write(x)
         f.close()
 
