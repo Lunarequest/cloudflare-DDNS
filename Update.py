@@ -1,12 +1,11 @@
-from gen_settings import api_key, domain, email
-import requests
+from requests import get
 import yaml
 import CloudFlare
 import sys
 
 with open("settings.yml", "r") as f:
     data = f.read()
-    creds = yaml.load(data)
+    creds = yaml.full_load(data)
     f.close()
     email = creds["email"]
     api_key = creds["api_key"]
@@ -20,6 +19,7 @@ zones = cf.zones.get()
 
 def get_zone_ip(zone, domain):
     found = False
+    print(zones)
     for zone in zones:
         zone_name = zone["name"]
         if zone_name == domain:
@@ -33,9 +33,13 @@ def get_zone_ip(zone, domain):
 
 def check(cf, zone_id):
     dns_records = cf.zones.dns_records.get(zone_id)
-    current_ip = requests.get("http://ip.42.pl/raw").text
+    current_ip = get("http://ip.42.pl/raw").text
     if current_ip == dns_records["conntent"]:
         print("ip is up to date")
     else:
-        dns_records = cf.zones.dns_records.put("")
+        dns_records = cf.zones.dns_records.put(current_ip)
+
+
+zone_id = get_zone_ip(zones, domain)
+check(cf, zone_id)
 
