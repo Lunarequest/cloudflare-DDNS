@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from requests import get
 import yaml
 import CloudFlare
