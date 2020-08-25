@@ -21,6 +21,11 @@ def get_zone_ip(zone, domain):
         sys.exit(1)
 
 
+def get_record_id(zone_id):
+    record_id = cf.zones.dns_records(zone_id)
+    return record_id
+
+
 def check(zone_id, record_id):
     dns_records = cf.zones.dns_records.get(zone_id)
     current_ip = get("http://ip.42.pl/raw").text
@@ -56,6 +61,7 @@ def update():
     """
     print(message)
     zone_id = get_zone_ip(zones, domain)
+    record_id = get_record_id(zone_id)
     check(record_id, zone_id)
 
 
