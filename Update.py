@@ -45,24 +45,23 @@ def update():
         email = creds["email"]
         api_key = creds["api_key"]
         domain = creds["domain"]
-        record_id = creds["id"]
+        zones = creds["zones"]
         global cf
         cf = CloudFlare.CloudFlare(email=email, token=api_key)
     except:
         print("failed to open config")
         sys.exit(1)
-    zones = cf.zones.get()
-    if len(zones) < 1:
-        print("no zone in account")
-        sys.exit(1)
-
     message = """
-    THIS PROGRAM DOES NOT COME WITH ANY WARRENTY
-    """
-    print(message)
-    zone_id = get_zone_ip(zones, domain)
-    record_id = get_record_id(zone_id)
-    check(record_id, zone_id)
+        THIS PROGRAM DOES NOT COME WITH ANY WARRENTY
+        """
+        print(message)
+    for zone in zones:
+        zonex = cf.zones.get()
+        if len(zonex) < 1:
+            print("no zone in account")
+        zone_id = get_zone_ip(zonex, domain)
+        record_id = get_record_id(zone_id)
+        check(record_id, zone_id)
 
 
 if __name__ == "__main__":
