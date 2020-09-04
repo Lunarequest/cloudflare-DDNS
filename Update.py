@@ -1,38 +1,58 @@
 #!/usr/bin/python
+from unittest import result
 import requests
+import socket
 import json
 import yaml
 import argparse
 from sys import exit
 
 
+def is_connected():
+    try:
+        x = socket.create_connection(("8.8.8.8", 53))
+        x.close()
+        return True
+    except OSError:
+        pass
+    return False
+
+
 def update(domain, zone_id, record_id, api_key):
     dynamic_ip = requests.get("http://ip.42.pl/raw").text
     headers = {"content-type": "application/json", "Authorization": f"Bearer {api_key}"}
 
-    data = {
-        "type": "A",
-        "name": f"{domain}",
-        "content": f"{dynamic_ip}",
-        "ttl": 1,
-        "proxied": True,
-    }
-    data = json.dumps(data)
-    response = requests.put(
+    response = requests.get(
         f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records/{record_id}",
         headers=headers,
-        data=data,
     )
-    response_status = response.json()["success"]
-    if response_status:
-        print("updated")
+    ip = response.json()["result"]["content"]
+    if ip == dynamic_ip:
+        print("ip is already set")
     else:
-        print(
-            "there was a error in the update the response may help debug it\n",
-            response,
-            "\n",
-            response.json(),
+        data = {
+            "type": "A",
+            "name": f"{domain}",
+            "content": f"{dynamic_ip}",
+            "ttl": 1,
+            "proxied": True,
+        }
+        data = json.dumps(data)
+        response = requests.put(
+            f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records/{record_id}",
+            headers=headers,
+            data=data,
         )
+        response_status = response.json()["success"]
+        if response_status:
+            print("updated")
+        else:
+            print(
+                "there was a error in the update the response may help debug it\n",
+                response,
+                "\n",
+                response.json(),
+            )
 
 
 def ddns():
@@ -62,7 +82,11 @@ def get_record_id():
     data = response.json()
     data = data["result"]
     for record in data:
-        if record["zone_id"] == zone_id:
+        if (
+            record["zone_id"] == zone_id
+            and record["name"] == domain
+            and record["type"] == "A"
+        ):
             record_id = record["id"]
             with open("settings.yml", "w") as f:
                 data = {
@@ -80,7 +104,13 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--ddns", type=bool, help="update dns records")
 x = parser.parse_args()
 if x.ddns:
+    connected = False
+    while connected == False:
+        connected = is_connected()
     ddns()
 else:
+    connected = False
+    while connected == False:
+        connected = is_connected()
     get_record_id()
     ddns()
