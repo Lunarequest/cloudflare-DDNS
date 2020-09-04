@@ -139,12 +139,12 @@ if len(argv) < 2:
         connected = is_connected()
     get_record_id()
     ddns()
-elif argv[2] == "--ddns":
+elif argv[1] == "--ddns":
     connected = False
     while connected == False:
         connected = is_connected()
     ddns()
-elif argv[2] == "-h":
+elif argv[1] == "-h":
     print(
         "usage update.py <args:optional>\n-h for this message\n--ddns skip directly to DDNS updateing"
     )
