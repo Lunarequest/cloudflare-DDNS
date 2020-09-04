@@ -1,68 +1,86 @@
-#!/usr/bin/pyth
-from requests import get
+#!/usr/bin/python
+import requests
+import json
 import yaml
-import CloudFlare
-import sys
-import os
+import argparse
+from sys import exit
 
 
-def get_zone_ip(zone, domain):
-    found = False
-    print(zones)
-    for zone in zones:
-        zone_name = zone["name"]
-        if zone_name == domain:
-            found = True
-            zone_id = zone["id"]
-    if found:
-        return zone_id
+def update(domain, zone_id, record_id, api_key):
+    dynamic_ip = requests.get("http://ip.42.pl/raw").text
+    headers = {"content-type": "application/json", "Authorization": f"Bearer {api_key}"}
+
+    data = {
+        "type": "A",
+        "name": f"{domain}",
+        "content": f"{dynamic_ip}",
+        "ttl": 1,
+        "proxied": True,
+    }
+    data = json.dumps(data)
+    response = requests.put(
+        f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records/{record_id}",
+        headers=headers,
+        data=data,
+    )
+    response_status = response.json()["success"]
+    if response_status:
+        print("updated")
     else:
-        print("zone not found")
-        sys.exit(1)
+        print(
+            "there was a error in the update the response may help debug it\n",
+            response,
+            "\n",
+            response.json(),
+        )
 
 
-def get_record_id(zone_id):
-    record_id = cf.zones.dns_records(zone_id)
-    return record_id
+def ddns():
+    with open("settings.yml", "r") as f:
+        settings = yaml.safe_load(f.read())
+        domain = settings["domain"]
+        api_key = settings["api_key"]
+        zone_id = settings["zone_id"]
+        record_id = settings["record_id"]
+        f.close()
+        update(domain, zone_id, record_id, api_key)
 
 
-def check(zone_id, record_id):
-    dns_records = cf.zones.dns_records.get(zone_id)
-    current_ip = get("http://ip.42.pl/raw").text
-    if current_ip == dns_records["conntent"]:
-        print("ip is up to date")
-    else:
-        dns_records = cf.zones.dns_records.edit(zone_id, record_id, current_ip)
+def get_record_id():
+    with open("settings.yml", "r") as f:
+        settings = yaml.safe_load(f.read())
+        domain = settings["domain"]
+        api_key = settings["api_key"]
+        zone_id = settings["zone_id"]
+        f.close()
+    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+
+    response = requests.get(
+        f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records",
+        headers=headers,
+    )
+    data = response.json()
+    data = data["result"]
+    for record in data:
+        if record["zone_id"] == zone_id:
+            record_id = record["id"]
+            with open("settings.yml", "w") as f:
+                data = {
+                    "api_key": api_key,
+                    "domain": domain,
+                    "zone_id": zone_id,
+                    "record_id": record_id,
+                }
+                data = yaml.dump(data)
+                f.write(data)
+                f.close()
 
 
-def update():
-    path = os.path.expanduser("~/.local")
-    try:
-        with open(f"{path}/settings.yml", "r") as f:
-            data = f.read()
-            creds = yaml.full_load(data)
-            f.close()
-        email = creds["email"]
-        api_key = creds["api_key"]
-        domain = creds["domain"]
-        zones = creds["zones"]
-        global cf
-        cf = CloudFlare.CloudFlare(email=email, token=api_key)
-    except:
-        print("failed to open config")
-        sys.exit(1)
-    message = """
-        THIS PROGRAM DOES NOT COME WITH ANY WARRENTY
-        """
-        print(message)
-    for zone in zones:
-        zonex = cf.zones.get()
-        if len(zonex) < 1:
-            print("no zone in account")
-        zone_id = get_zone_ip(zonex, domain)
-        record_id = get_record_id(zone_id)
-        check(record_id, zone_id)
-
-
-if __name__ == "__main__":
-    pass
+parser = argparse.ArgumentParser()
+parser.add_argument("--ddns", type=bool, help="update dns records")
+x = parser.parse_args()
+if x.ddns:
+    ddns()
+else:
+    get_record_id()
+    ddns()
