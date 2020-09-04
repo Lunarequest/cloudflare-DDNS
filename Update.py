@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 from aifc import Error
 from unittest import result
 import requests
