@@ -27,9 +27,10 @@ def update(domain, zone_id, record_id, api_key):
         f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records/{record_id}",
         headers=headers,
     )
+    print(response)
     ip = response.json()["result"]["content"]
     if ip == dynamic_ip:
-        print("ip is already set")
+        print(f"ip for {domain} is already set")
     else:
         data = {
             "type": "A",
@@ -64,19 +65,17 @@ def ddns():
         zone_id = settings["zone_id"]
         record_id = settings["record_id"]
         try:
-            subdomains = settings["subdomains"]
+            subdomains = settings["subdoamins"]
             subdomains_id = settings["subdomains_id"]
-            print("success")
-        except:
-            subdomains = None
-        f.close()
-        update(domain, zone_id, record_id, api_key)
-        if subdomains == None:
-            pass
-        else:
+            f.close()
+            update(domain, zone_id, record_id, api_key)
             for domain_name, domain_id in subdomains, subdomains_id:
                 print(domain_name)
                 update(domain_name, zone_id, domain_id, api_key)
+            print("success")
+        except Error:
+            f.close()
+            update(domain, zone_id, record_id, api_key)
 
 
 def get_record_id():
@@ -95,13 +94,14 @@ def get_record_id():
         )
         data = response.json()
         data = data["result"]
+        for record in data:
+            if record["name"] == domain and record["type"] == "A":
+                record_id = record["id"]
         try:
-            for record in data:
-                if record["name"] == domain and record["type"] == "A":
-                    record_id = record["id"]
-            print("attempting to load")
-            subdomain = settings["subdomains"]
+
+            subdomain = settings["subdoamins"]
             f.close()
+            print(subdomain)
             domains_id = []
             for record in data:
                 for domain in subdomain:
@@ -117,21 +117,17 @@ def get_record_id():
                     "subdoamins": subdomain,
                     "subdomains_id": domains_id,
                 }
+                print(data)
                 data = yaml.dump(data)
                 f.write(data)
                 f.close()
-        except:
-            for record in data:
-                if record["name"] == domain and record["type"] == "A":
-                    record_id = record["id"]
+        except Error:
             with open("settings.yml", "w") as f:
                 data = {
                     "api_key": api_key,
                     "domain": domain,
                     "zone_id": zone_id,
                     "record_id": record_id,
-                    "subdoamins": subdomain,
-                    "subdomains_id": domains_id,
                 }
                 data = yaml.dump(data)
                 f.write(data)
