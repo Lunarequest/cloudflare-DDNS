@@ -6,7 +6,7 @@ import socket
 import json
 import yaml
 import argparse
-from sys import exit
+from sys import exit, argv
 
 
 def is_connected():
@@ -133,17 +133,20 @@ def get_record_id():
                 f.close()
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--ddns", type=bool, help="update dns records")
-x = parser.parse_args()
-if x.ddns:
-    connected = False
-    while connected == False:
-        connected = is_connected()
-    ddns()
-else:
+if len(argv) < 2:
     connected = False
     while connected == False:
         connected = is_connected()
     get_record_id()
     ddns()
+elif argv[2] == "--ddns":
+    connected = False
+    while connected == False:
+        connected = is_connected()
+    ddns()
+elif argv[2] == "-h":
+    print(
+        "usage update.py <args:optional>\n-h for this message\n--ddns skip directly to DDNS updateing"
+    )
+else:
+    print("Too many args. ")
