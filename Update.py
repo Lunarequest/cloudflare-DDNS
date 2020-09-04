@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from aifc import Error
 from unittest import result
 import requests
 import socket
@@ -13,8 +14,8 @@ def is_connected():
         x = socket.create_connection(("8.8.8.8", 53))
         x.close()
         return True
-    except OSError:
-        pass
+    except Error as e:
+        print(e)
     return False
 
 
@@ -45,7 +46,7 @@ def update(domain, zone_id, record_id, api_key):
         )
         response_status = response.json()["success"]
         if response_status:
-            print("updated")
+            print(f"updated {domain}")
         else:
             print(
                 "there was a error in the update the response may help debug it\n",
@@ -62,8 +63,20 @@ def ddns():
         api_key = settings["api_key"]
         zone_id = settings["zone_id"]
         record_id = settings["record_id"]
+        try:
+            subdomains = settings["subdomains"]
+            subdomains_id = settings["subdomains_id"]
+            print("success")
+        except:
+            subdomains = None
         f.close()
         update(domain, zone_id, record_id, api_key)
+        if subdomains == None:
+            pass
+        else:
+            for domain_name, domain_id in subdomains, subdomains_id:
+                print(domain_name)
+                update(domain_name, zone_id, domain_id, api_key)
 
 
 def get_record_id():
@@ -72,28 +85,53 @@ def get_record_id():
         domain = settings["domain"]
         api_key = settings["api_key"]
         zone_id = settings["zone_id"]
-        f.close()
-    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
-
-    response = requests.get(
-        f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records",
-        headers=headers,
-    )
-    data = response.json()
-    data = data["result"]
-    for record in data:
-        if (
-            record["zone_id"] == zone_id
-            and record["name"] == domain
-            and record["type"] == "A"
-        ):
-            record_id = record["id"]
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        }
+        response = requests.get(
+            f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records",
+            headers=headers,
+        )
+        data = response.json()
+        data = data["result"]
+        try:
+            for record in data:
+                if record["name"] == domain and record["type"] == "A":
+                    record_id = record["id"]
+            print("attempting to load")
+            subdomain = settings["subdomains"]
+            f.close()
+            domains_id = []
+            for record in data:
+                for domain in subdomain:
+                    if str(record["name"]) == str(domain):
+                        x = record["id"]
+                        domains_id.append(x)
             with open("settings.yml", "w") as f:
                 data = {
                     "api_key": api_key,
                     "domain": domain,
                     "zone_id": zone_id,
                     "record_id": record_id,
+                    "subdoamins": subdomain,
+                    "subdomains_id": domains_id,
+                }
+                data = yaml.dump(data)
+                f.write(data)
+                f.close()
+        except:
+            for record in data:
+                if record["name"] == domain and record["type"] == "A":
+                    record_id = record["id"]
+            with open("settings.yml", "w") as f:
+                data = {
+                    "api_key": api_key,
+                    "domain": domain,
+                    "zone_id": zone_id,
+                    "record_id": record_id,
+                    "subdoamins": subdomain,
+                    "subdomains_id": domains_id,
                 }
                 data = yaml.dump(data)
                 f.write(data)
