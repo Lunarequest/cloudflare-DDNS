@@ -68,7 +68,10 @@ def ddns():
             subdomains_id = settings["subdomains_id"]
             f.close()
             update(domain, zone_id, record_id, api_key)
-            for domain_name, domain_id in subdomains, subdomains_id:
+            index = 0
+            for domain_name in subdomains:
+                domain_id = subdomains_id[index]
+                index = +1
                 print(domain_name)
                 update(domain_name, zone_id, domain_id, api_key)
         except Error:
@@ -114,7 +117,6 @@ def get_record_id():
                     "subdoamins": subdomain,
                     "subdomains_id": domains_id,
                 }
-                print(data)
                 data = yaml.dump(data)
                 f.write(data)
                 f.close()

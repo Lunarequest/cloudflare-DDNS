@@ -18,7 +18,7 @@ def gen_settings():
             "api_key": api_key,
             "domain": domain,
             "zone_id": zone_id,
-            "subdomains": subdomains,
+            "subdoamins": subdomains,
         }
     x = yaml.dump(creds)
     with open(f"settings.yml", "w") as f:
