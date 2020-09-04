@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 from aifc import Error
 from unittest import result
+from xml import dom
 import requests
 import socket
 import json
@@ -95,42 +96,50 @@ def get_record_id():
         )
         data = response.json()
         data = data["result"]
+        record_id = None
         for record in data:
             if record["name"] == domain and record["type"] == "A":
                 record_id = record["id"]
-        try:
-
-            subdomain = settings["subdoamins"]
-            f.close()
-            domains_id = []
-            for record in data:
-                for domain in subdomain:
-                    if str(record["name"]) == str(domain):
-                        x = record["id"]
-                        domains_id.append(x)
-            with open("settings.yml", "w") as f:
-                data = {
-                    "api_key": api_key,
-                    "domain": domain,
-                    "zone_id": zone_id,
-                    "record_id": record_id,
-                    "subdoamins": subdomain,
-                    "subdomains_id": domains_id,
-                }
-                data = yaml.dump(data)
-                f.write(data)
+        if record_id != None:
+            try:
+                subdomain = settings["subdoamins"]
                 f.close()
-        except Error:
-            with open("settings.yml", "w") as f:
-                data = {
-                    "api_key": api_key,
-                    "domain": domain,
-                    "zone_id": zone_id,
-                    "record_id": record_id,
-                }
-                data = yaml.dump(data)
-                f.write(data)
-                f.close()
+                domains_id = []
+                for record in data:
+                    x = None
+                    for domain in subdomain:
+                        if str(record["name"]) == str(domain):
+                            x = record["id"]
+                            domains_id.append(x)
+                        if x == None:
+                            print(f"unable to get record id for {domain}")
+                            exit(1)
+                with open("settings.yml", "w") as f:
+                    data = {
+                        "api_key": api_key,
+                        "domain": domain,
+                        "zone_id": zone_id,
+                        "record_id": record_id,
+                        "subdoamins": subdomain,
+                        "subdomains_id": domains_id,
+                    }
+                    data = yaml.dump(data)
+                    f.write(data)
+                    f.close()
+            except Error:
+                with open("settings.yml", "w") as f:
+                    data = {
+                        "api_key": api_key,
+                        "domain": domain,
+                        "zone_id": zone_id,
+                        "record_id": record_id,
+                    }
+                    data = yaml.dump(data)
+                    f.write(data)
+                    f.close()
+        else:
+            print("unable to find record id")
+            exit(1)
 
 
 if len(argv) < 2:
