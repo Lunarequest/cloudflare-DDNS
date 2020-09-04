@@ -27,7 +27,6 @@ def update(domain, zone_id, record_id, api_key):
         f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records/{record_id}",
         headers=headers,
     )
-    print(response)
     ip = response.json()["result"]["content"]
     if ip == dynamic_ip:
         print(f"ip for {domain} is already set")
@@ -72,7 +71,6 @@ def ddns():
             for domain_name, domain_id in subdomains, subdomains_id:
                 print(domain_name)
                 update(domain_name, zone_id, domain_id, api_key)
-            print("success")
         except Error:
             f.close()
             update(domain, zone_id, record_id, api_key)
@@ -101,7 +99,6 @@ def get_record_id():
 
             subdomain = settings["subdoamins"]
             f.close()
-            print(subdomain)
             domains_id = []
             for record in data:
                 for domain in subdomain:
