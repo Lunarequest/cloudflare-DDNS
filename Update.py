@@ -8,6 +8,7 @@ import json
 import yaml
 import argparse
 from sys import exit, argv
+from ipaddress import ip_interface
 
 
 def is_connected():
@@ -21,14 +22,14 @@ def is_connected():
 
 
 def update(domain, zone_id, record_id, api_key):
-    dynamic_ip = requests.get("http://ip.42.pl/raw").text
+    dynamic_ip = ip_interface.IPAddress(requests.get("http://ip.42.pl/raw").text)
     headers = {"content-type": "application/json", "Authorization": f"Bearer {api_key}"}
 
     response = requests.get(
         f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records/{record_id}",
         headers=headers,
     )
-    ip = response.json()["result"]["content"]
+    ip = ip_interface.IPAddress(response.json()["result"]["content"])
     if ip == dynamic_ip:
         print(f"ip for {domain} is already set")
     else:
