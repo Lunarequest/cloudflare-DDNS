@@ -8,7 +8,6 @@ import json
 import yaml
 import argparse
 from sys import exit, argv
-from ipaddress import ip_address
 
 
 def is_connected():
