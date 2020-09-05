@@ -1,6 +1,6 @@
 # CloudFlare DDNS
 
-This script will update cloudflare dns with new dynamic ips when the current one changes.
+This script will update cloudflare dns with new dynamic ips when the current one changes. Please check the settings.yml file to ensure its correct.
 
 ## Limitations
 

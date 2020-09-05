@@ -21,6 +21,7 @@ def gen_settings():
             "subdoamins": subdomains,
         }
     x = yaml.dump(creds)
+    print(creds)
     with open(f"settings.yml", "w") as f:
         f.write(x)
         f.close()

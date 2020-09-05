@@ -109,14 +109,13 @@ def get_record_id():
                 f.close()
                 domains_id = []
                 for record in data:
-                    x = None
                     for domain in subdomain:
                         if str(record["name"]) == str(domain):
                             x = record["id"]
                             domains_id.append(x)
-                        if x == None:
-                            print(f"unable to get record id for {domain}")
-                            exit(1)
+                if len(domains_id) != len(subdomain):
+                    print("unable to get record id of one or  more subdomain")
+                    exit(1)
                 with open("settings.yml", "w") as f:
                     data = {
                         "api_key": api_key,
