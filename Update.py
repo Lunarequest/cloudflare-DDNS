@@ -1,9 +1,9 @@
 #!/usr/bin/python3
-from ipaddress import ip_address
 import requests
 import socket
 import json
 import yaml
+from ipaddress import ip_address
 from sys import exit, argv
 
 
