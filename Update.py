@@ -1,12 +1,9 @@
 #!/usr/bin/python3
-from aifc import Error
-from unittest import result
-from xml import dom
+from ipaddress import ip_address
 import requests
 import socket
 import json
 import yaml
-import argparse
 from sys import exit, argv
 
 
@@ -21,7 +18,8 @@ def is_connected():
 
 
 def update(domain, zone_id, record_id, api_key):
-    dynamic_ip = str(requests.get("http://ip.42.pl/raw").text)
+    dynamic_ip = str(requests.get("http://ip.jsontest.com/").json()["ip"])
+
     headers = {"content-type": "application/json", "Authorization": f"Bearer {api_key}"}
 
     response = requests.get(
@@ -29,13 +27,16 @@ def update(domain, zone_id, record_id, api_key):
         headers=headers,
     )
     ip = str(response.json()["result"]["content"])
-    if ip == dynamic_ip:
+    if ip_address(ip) == ip_address(dynamic_ip):
+        print("current ip: " + dynamic_ip, "cloudflare ip: " + ip)
         print(f"ip for {domain} is already set")
         exit
     else:
+        split = domain.split()
+        sub = split[0]
         data = {
             "type": "A",
-            "name": f"{domain}",
+            "name": f"{sub}",
             "content": f"{dynamic_ip}",
             "ttl": 1,
             "proxied": True,
@@ -78,7 +79,7 @@ def ddns():
                 domain_id = subdomains_id[index]
                 index = +1
                 update(domain_name, zone_id, domain_id, api_key)
-        except Error:
+        except Error as e:
             f.close()
             update(domain, zone_id, record_id, api_key)
 
