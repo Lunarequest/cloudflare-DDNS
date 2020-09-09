@@ -7,7 +7,7 @@ HERE = pathlib.Path(__file__).parent
 # The text of the README file
 README = (HERE / "README.md").read_text()
 
-setup(name="cloudflare-ddns",
+setup(name="simple-cloudflare-ddns",
     version="1.0.0",
     description="A battries included quick way to update dns records",
     long_description=README,
