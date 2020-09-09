@@ -28,10 +28,10 @@ def update(domain, zone_id, record_id, api_key):
     )
     ip = str(response.json()["result"]["content"])
     if ip_address(ip) == ip_address(dynamic_ip):
-        print("current ip: " + dynamic_ip, "cloudflare ip: " + ip)
         print(f"ip for {domain} is already set")
         exit
     else:
+        print("current ip: " + dynamic_ip, "cloudflare ip: " + ip)
         split = domain.split()
         sub = split[0]
         data = {
@@ -79,7 +79,7 @@ def ddns():
                 domain_id = subdomains_id[index]
                 index = +1
                 update(domain_name, zone_id, domain_id, api_key)
-        except Error:
+        except:
             f.close()
             update(domain, zone_id, record_id, api_key)
 
@@ -129,7 +129,7 @@ def get_record_id():
                     data = yaml.dump(data)
                     f.write(data)
                     f.close()
-            except errors:
+            except:
                 with open("settings.yml", "w") as f:
                     data = {
                         "api_key": api_key,
