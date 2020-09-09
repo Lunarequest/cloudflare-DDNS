@@ -1,5 +1,7 @@
 # CloudFlare DDNS
 
+<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+
 This script will update cloudflare dns with new dynamic ips when the current one changes. Please check the settings.yml file to ensure its correct.
 
 ## Limitations
