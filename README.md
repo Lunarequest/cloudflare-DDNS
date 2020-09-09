@@ -4,4 +4,4 @@ This script will update cloudflare dns with new dynamic ips when the current one
 
 ## Limitations
 
-- No IPv6 support(This is not possible with how cloudflare works currently)
+- No IPv6 support(My isp does not assing ipv6 address i can not test if this works)
