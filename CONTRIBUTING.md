@@ -1,4 +1,4 @@
-# Contributing to Nuclear
+# Contributing to Cloudflare-ddns
 
 Welcome, and thank you for your interest in contributing to cloudflare-ddns!
 
