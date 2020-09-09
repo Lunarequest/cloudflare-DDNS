@@ -11,4 +11,10 @@ This script will update cloudflare dns with new dynamic ips when the current one
 If you wish to conrtbute to this project please check the [CONTRIBUTING.md](https://github.com/advaithm/cloudflare-DDNS/blob/master/CONTRIBUTING.md) file.
 
 The scipt can be got at <https://pypi.org/project/simple-cloudflare-ddns/>. I will be publishing docs on how to use the inbuilt functions. For a quick setup you can use the following commands.
-``s
+
+```bash
+$ cloudflareddns --gen-settings # this will create a file called settings.yml
+$ cloudflareddns # this will get record ids
+```
+
+after running this you can run `cloudflareddns --ddns` to skip getting the record id as it is stored in the settings.yml
