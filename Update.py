@@ -18,7 +18,7 @@ def is_connected():
 
 
 def update(domain, zone_id, record_id, api_key):
-    dynamic_ip = str(requests.get("http://ip.jsontest.com/").json()["ip"])
+    dynamic_ip = str(requests.get("http://ipinfo.io/ip").text.strip("\n"))
 
     headers = {"content-type": "application/json", "Authorization": f"Bearer {api_key}"}
 
