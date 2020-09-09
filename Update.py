@@ -12,7 +12,7 @@ def is_connected():
         x = socket.create_connection(("8.8.8.8", 53))
         x.close()
         return True
-    except Error as e:
+    except OSError as e:
         print(e)
     return False
 
@@ -79,7 +79,7 @@ def ddns():
                 domain_id = subdomains_id[index]
                 index = +1
                 update(domain_name, zone_id, domain_id, api_key)
-        except Error as e:
+        except Error:
             f.close()
             update(domain, zone_id, record_id, api_key)
 
@@ -129,7 +129,7 @@ def get_record_id():
                     data = yaml.dump(data)
                     f.write(data)
                     f.close()
-            except Error:
+            except errors:
                 with open("settings.yml", "w") as f:
                     data = {
                         "api_key": api_key,
