@@ -80,10 +80,12 @@ def update(domain, zone_id, record_id, api_key):
         response_status = response.json()["success"]
         if response_status:
             print(f"updated {domain}")
+            return True
         else:
             # checks if record exists
             if response.json()["errors"][0]["code"] == 81058:
                 print("there was a conficting domain please report this")
+                return False
             else:
                 # if there is a unknow error print some debug info
                 print(
@@ -92,6 +94,7 @@ def update(domain, zone_id, record_id, api_key):
                     "\n",
                     response.json(),
                 )
+                return False
 
 
 def ddns():
@@ -117,6 +120,11 @@ def ddns():
             f.close()
             update(domain, zone_id, record_id, api_key)
 
+def write_data(data):
+    with open("settings.yml", "w") as f:
+        data = yaml.dump(data)
+        f.write(data)
+        f.close()
 
 # udates settings.yml with record ids
 def get_record_id():
@@ -158,30 +166,22 @@ def get_record_id():
                     print("unable to get record id of one or  more subdomain")
                     exit(1)
                 # updates settings
-                with open("settings.yml", "w") as f:
-                    data = {
+                data = {
                         "api_key": api_key,
                         "domain": domain,
                         "zone_id": zone_id,
                         "record_id": record_id,
                         "subdoamins": subdomain,
                         "subdomains_id": domains_id,
-                    }
-                    data = yaml.dump(data)
-                    f.write(data)
-                    f.close()
+                    }       
             except:
-                # excepts running with root domain
-                with open("settings.yml", "w") as f:
                     data = {
                         "api_key": api_key,
                         "domain": domain,
                         "zone_id": zone_id,
                         "record_id": record_id,
                     }
-                    data = yaml.dump(data)
-                    f.write(data)
-                    f.close()
+                    return data
         else:
             print("unable to find record id")
             exit(1)
@@ -192,7 +192,8 @@ if len(argv) < 2:
     connected = False
     while connected == False:
         connected = is_connected()
-    get_record_id()
+    data = get_record_id()
+    write_data(data)
     ddns()
 # check if that argument is --ddns
 elif argv[1] == "--ddns":
