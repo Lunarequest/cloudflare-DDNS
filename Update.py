@@ -20,8 +20,8 @@ def is_connected():
 
 # updates the ip
 def update(domain, zone_id, record_id, api_key):
-    # get dynamic ip and ensure it is a string
-    dynamic_ip = str(requests.get("http://ipinfo.io/ip").text.strip("\n"))
+    # get dynamic ip and ensure it is a string with out any sepcial charecters
+    dynamic_ip = str(requests.get("http://ipinfo.io/ip").text.strip())
     # create request headers
     headers = {"content-type": "application/json", "Authorization": f"Bearer {api_key}"}
     # gets the record via api
