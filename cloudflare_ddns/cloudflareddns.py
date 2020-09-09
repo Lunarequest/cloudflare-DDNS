@@ -187,7 +187,7 @@ def get_record_id():
             return None
             
 
-if __name__ == "__main__":
+def main():
     # check if argv has a argument
     if len(argv) < 2:
         connected = False

@@ -1,0 +1,10 @@
+MANIFEST.in
+README.md
+setup.py
+cloudflare_ddns/cloudflareddns.py
+simple_cloudflare_ddns.egg-info/PKG-INFO
+simple_cloudflare_ddns.egg-info/SOURCES.txt
+simple_cloudflare_ddns.egg-info/dependency_links.txt
+simple_cloudflare_ddns.egg-info/entry_points.txt
+simple_cloudflare_ddns.egg-info/requires.txt
+simple_cloudflare_ddns.egg-info/top_level.txt

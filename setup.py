@@ -8,7 +8,7 @@ HERE = pathlib.Path(__file__).parent
 README = (HERE / "README.md").read_text()
 
 setup(name="simple-cloudflare-ddns",
-    version="1.0.0",
+    version="1.0.1",
     description="A super simple cli tool to update dns records",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -26,12 +26,12 @@ setup(name="simple-cloudflare-ddns",
         "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: 3.8",
     ],
-    packages=["cloudflare-ddns"],
+    packages=["cloudflare_ddns"],
     include_package_data=True,
     install_requires=["requests", "pyyaml","sockets"],
     entry_points={
         "console_scripts": [
-            "cloudflareddns=cloudflareddns.__main__:main",
+            "cloudflareddns=cloudflare_ddns.cloudflareddns:main",
         ]
     },
 )
