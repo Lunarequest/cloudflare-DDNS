@@ -3,6 +3,7 @@ import requests
 import socket
 import json
 import yaml
+import logging
 from ipaddress import ip_address
 from sys import exit, argv
 
@@ -36,7 +37,7 @@ def gen_settings():
             "subdoamins": subdomains,
         }
     x = yaml.dump(creds)
-    print(creds)
+    logging.info(creds)
     with open(f"settings.yml", "w") as f:
         f.write(x)
         f.close()
@@ -58,9 +59,8 @@ def update(domain, zone_id, record_id, api_key):
     if ip_address(ip) == ip_address(dynamic_ip):
         # if set prints warrning
         print(f"ip for {domain} is already set")
-        exit
     else:
-        print("current ip: " + dynamic_ip, "cloudflare ip: " + ip)
+        logging.info("current ip: " + dynamic_ip, "cloudflare ip: " + ip)
         # prepares data for json injection to update via api
         data = {
             "type": "A",
@@ -84,7 +84,7 @@ def update(domain, zone_id, record_id, api_key):
         else:
             # checks if record exists
             if response.json()["errors"][0]["code"] == 81058:
-                print("there was a conficting domain please report this")
+                logging.error("there was a conficting domain please report this")
                 return False
             else:
                 # if there is a unknow error print some debug info
@@ -183,32 +183,33 @@ def get_record_id():
                     }
                     return data
         else:
-            print("unable to find record id")
-            exit(1)
+            logging.error("unable to find record id")
+            return None
+            
 
-
-# check if argv has a argument
-if len(argv) < 2:
-    connected = False
-    while connected == False:
-        connected = is_connected()
-    data = get_record_id()
-    write_data(data)
-    ddns()
-# check if that argument is --ddns
-elif argv[1] == "--ddns":
-    # check if internet is connected
-    connected = False
-    while connected == False:
-        connected = is_connected()
-    ddns()
-elif argv[1] == "--gen-settings":
-    gen_settings()
-# check for usage info handel
-elif argv[1] == "-h":
-    print(
-        "usage update.py <args:optional>\n-h for this message\n--gen-settings to create settings.yml\n--ddns skip directly to DDNS updateing"
-    )
-else:
-    # error out
-    print("Too many args. ")
+if __name__ == "__main__":
+    # check if argv has a argument
+    if len(argv) < 2:
+        connected = False
+        while connected == False:
+            connected = is_connected()
+        data = get_record_id()
+        write_data(data)
+        ddns()
+    # check if that argument is --ddns
+    elif argv[1] == "--ddns":
+        # check if internet is connected
+        connected = False
+        while connected == False:
+            connected = is_connected()
+        ddns()
+    elif argv[1] == "--gen-settings":
+        gen_settings()
+    # check for usage info handel
+    elif argv[1] == "-h":
+        print(
+            "usage update.py <args:optional>\n-h for this message\n--gen-settings to create settings.yml\n--ddns skip directly to DDNS updateing"
+        )
+    else:
+        # error out
+        print("Too many args. ")
