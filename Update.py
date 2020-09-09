@@ -110,8 +110,8 @@ def get_record_id():
                 f.close()
                 domains_id = []
                 for record in data:
-                    for domain in subdomain:
-                        if str(record["name"]) == str(domain):
+                    for domains in subdomain:
+                        if str(record["name"]) == str(domains):
                             x = record["id"]
                             domains_id.append(x)
                 if len(domains_id) != len(subdomain):
