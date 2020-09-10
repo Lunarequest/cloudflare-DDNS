@@ -141,7 +141,12 @@ def ddns():
             update(domain, zone_id, record_id, api_key)
 
 def write_data(data):
-    ""
+    """writes data to settings.yml
+
+    :param data: (dict)  the dict is the same as returned by get_record_id
+    
+    :return: None
+    """
     with open("settings.yml", "w") as f:
         data = yaml.dump(data)
         f.write(data)
@@ -216,7 +221,7 @@ def get_record_id():
             
 
 def main():
-    ""
+    """called by cli. probably can't be used anywhere"""
     # check if argv has a argument
     if len(argv) < 2:
         connected = False
