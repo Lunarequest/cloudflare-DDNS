@@ -7,8 +7,11 @@ import logging
 from ipaddress import ip_address
 from sys import exit, argv
 
-# function to check if there is a internet connection
 def is_connected():
+    """function to check if there is a internet connection returns true 
+
+    :return: bool (true if connected)
+    """
     try:
         # creates connection if it is able too then it returns true
         x = socket.create_connection(("8.8.8.8", 53))
@@ -17,8 +20,11 @@ def is_connected():
     except OSError as e:  # Generic os errors
         print(e)
     return False
-# function to genrate the settings.yaml
+
 def gen_settings():
+    """function to genrate the settings.yaml
+    :return: None
+    """
     api_key = input("input api key: ").strip().replace(" ","")
     domain = input("input target domain: ").strip().replace(" ","")
     zone_id = input("input zone id: ").strip().replace(" ","")
@@ -42,8 +48,17 @@ def gen_settings():
         f.write(x)
         f.close()
 
-# updates the ip
+
 def update(domain, zone_id, record_id, api_key):
+    """updates the ip
+
+    :param domain: (str) The domain
+    :param zone_id: (str) The domains zone id can be found in the cloudflare dashbboard
+    :param record_id: (str) The record id
+    :param api_key: (str) The api key used to make requests
+
+    :return: bool true if update succeeded false if failed
+    """
     # get dynamic ip and ensure it is a string with out any sepcial charecters
     dynamic_ip = str(requests.get("http://ipinfo.io/ip").text.strip())
     # create request headers
@@ -98,6 +113,11 @@ def update(domain, zone_id, record_id, api_key):
 
 
 def ddns():
+    """
+    runs dynamic ddns after reading from the settings.yml file
+
+    :return: None
+    """
     # gets settings
     with open("settings.yml", "r") as f:
         settings = yaml.safe_load(f.read())
@@ -121,13 +141,21 @@ def ddns():
             update(domain, zone_id, record_id, api_key)
 
 def write_data(data):
+    ""
     with open("settings.yml", "w") as f:
         data = yaml.dump(data)
         f.write(data)
         f.close()
-
-# udates settings.yml with record ids
+ 
 def get_record_id():
+    """
+    gets record ids using settings.yml
+
+    :returns: dict{api_key,domain,zone_id,record_id, subdomains, domains_id}
+    api_key,domain,zone_id,record_id are of the type string
+    subdomains, domains_id are lists
+
+    """
     # Trys with multiple domains
     with open("settings.yml", "r") as f:
         # opens settings.yml and loads
@@ -188,6 +216,7 @@ def get_record_id():
             
 
 def main():
+    ""
     # check if argv has a argument
     if len(argv) < 2:
         connected = False
