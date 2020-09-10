@@ -6,6 +6,7 @@ import yaml
 import logging
 from ipaddress import ip_address
 from sys import exit, argv
+from .verify import verify
 
 def is_connected():
     """function to check if there is a internet connection returns true 
@@ -252,6 +253,13 @@ def main():
         ddns()
     elif argv[1] == "--gen-settings":
         gen_settings()
+    elif argv[1] == "--verify":
+        settings = read_data()
+        failed = verify(settings)
+        if failed == True:
+            print("settings has failed the intgerty check")
+        else:
+            print("settings has passed the intgerty check")
     # check for usage info handel
     elif argv[1] == "-h":
         print(
