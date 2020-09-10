@@ -151,43 +151,57 @@ def write_data(data):
         data = yaml.dump(data)
         f.write(data)
         f.close()
- 
-def get_record_id():
-    """
-    gets record ids using settings.yml
-
-    :returns: dict{api_key,domain,zone_id,record_id, subdomains, domains_id}
-    api_key,domain,zone_id,record_id are of the type string
-    subdomains, domains_id are lists
-
-    """
-    # Trys with multiple domains
+def read_data():
+    """function to read data from settings.yml"""
     with open("settings.yml", "r") as f:
         # opens settings.yml and loads
         settings = yaml.safe_load(f.read())
         domain = settings["domain"]
         api_key = settings["api_key"]
         zone_id = settings["zone_id"]
+        try:
+            subdomain = settings["subdoamins"]
+        except:
+            subdomain = None
+        f.close()
+    data = {
+                        "api_key": api_key,
+                        "domain": domain,
+                        "zone_id": zone_id,
+                        "subdoamins": subdomain}
+    return data
+
+def get_record_id(settings):
+    """
+    gets record ids using settings which uses the dict returned from read data
+
+    :returns: dict{api_key,domain,zone_id,record_id, subdomains, domains_id}
+    api_key,domain,zone_id,record_id are of the type string
+    subdomains, domains_id are lists
+
+    """
+    api_key = settings["api_key"]
+    domain = settings["domain"]
+    zone_id = settings["zone_id"]
         # creates headers for request
-        headers = {
+    headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
         }
-        response = requests.get(
+    response = requests.get(
             f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records",
             headers=headers,
         )
-        data = response.json()  # loads the json response
-        data = data["result"]
-        record_id = None
+    data = response.json()  # loads the json response
+    data = data["result"]
+    record_id = None
         # parese the data until all records have data
-        for record in data:
+    for record in data:
             if record["name"] == domain and record["type"] == "A":
                 record_id = record["id"]
-        if record_id != None:
-            try:
+    if record_id != None:
+        if settings["subdoamins"] !=None:
                 subdomain = settings["subdoamins"]
-                f.close()
                 domains_id = []
                 for record in data:
                     for domains in subdomain:
@@ -206,18 +220,16 @@ def get_record_id():
                         "record_id": record_id,
                         "subdoamins": subdomain,
                         "subdomains_id": domains_id,
-                    }       
-            except:
-                    data = {
+                    }  
+                return data     
+        else:
+            data = {
                         "api_key": api_key,
                         "domain": domain,
                         "zone_id": zone_id,
                         "record_id": record_id,
                     }
-                    return data
-        else:
-            logging.error("unable to find record id")
-            return None
+            return data
             
 
 def main():
@@ -227,7 +239,8 @@ def main():
         connected = False
         while connected == False:
             connected = is_connected()
-        data = get_record_id()
+        settings = read_data()
+        data = get_record_id(settings)
         write_data(data)
         ddns()
     # check if that argument is --ddns
@@ -247,3 +260,6 @@ def main():
     else:
         # error out
         print("Too many args. ")
+
+if __name__ == "__main__":
+    main()
