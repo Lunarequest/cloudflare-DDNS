@@ -2,6 +2,7 @@ MANIFEST.in
 README.md
 setup.py
 cloudflare_ddns/cloudflareddns.py
+cloudflare_ddns/verify.py
 simple_cloudflare_ddns.egg-info/PKG-INFO
 simple_cloudflare_ddns.egg-info/SOURCES.txt
 simple_cloudflare_ddns.egg-info/dependency_links.txt

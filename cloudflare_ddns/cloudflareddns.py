@@ -6,7 +6,7 @@ import yaml
 import logging
 from ipaddress import ip_address
 from sys import exit, argv
-from .verify import verify
+from cloudflare_ddns.verify import verify
 
 def is_connected():
     """function to check if there is a internet connection returns true 
@@ -171,7 +171,31 @@ def read_data():
                         "zone_id": zone_id,
                         "subdoamins": subdomain}
     return data
-
+def read_data_record():
+    """function to read data include record ids from settings.yml"""
+    with open("settings.yml", "r") as f:
+        # opens settings.yml and loads
+        settings = yaml.safe_load(f.read())
+        domain = settings["domain"]
+        api_key = settings["api_key"]
+        zone_id = settings["zone_id"]
+        record_id = settings["record_id"]
+        try:
+            subdomain = settings["subdoamins"]
+            subdomains_id = settings["subdomains_id"]
+        except:
+            subdomain = None
+            subdomains_id = None
+        f.close()
+    data = {
+                            "api_key": api_key,
+                            "domain": domain,
+                            "zone_id": zone_id,
+                            "record_id":record_id,
+                            "subdoamins": subdomain,
+                            "subdomains_id":subdomains_id
+                            }
+    return data
 def get_record_id(settings):
     """
     gets record ids using settings which uses the dict returned from read data
@@ -254,7 +278,7 @@ def main():
     elif argv[1] == "--gen-settings":
         gen_settings()
     elif argv[1] == "--verify":
-        settings = read_data()
+        settings = read_data_record()
         failed = verify(settings)
         if failed == True:
             print("settings has failed the intgerty check")
