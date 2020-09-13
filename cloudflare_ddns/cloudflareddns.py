@@ -60,8 +60,8 @@ def update(domain, zone_id, record_id, api_key):
 
     :return: bool true if update succeeded false if failed
     """
-    # get dynamic ip and ensure it is a string with out any sepcial charecters
-    dynamic_ip = str(requests.get("http://ipinfo.io/ip").text.strip())
+    # get dynamic ip and ensure it is a string with out any sepcial charecters. the change is too support ipv6
+    dynamic_ip = str(requests.get("http://api64.ipify.org?format=json").json()["ip"]).strip()
     # create request headers
     headers = {"content-type": "application/json", "Authorization": f"Bearer {api_key}"}
     # gets the record via api
