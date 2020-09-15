@@ -18,3 +18,4 @@ $ cloudflareddns # this will get record ids
 ```
 
 after running this you can run `cloudflareddns --ddns` to skip getting the record id as it is stored in the settings.yml
+You can verify if the settings.yml is correct by running `cloudflareddns --verify`
