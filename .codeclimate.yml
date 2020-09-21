@@ -1,6 +1,9 @@
 exclude_patterns:
-- "source"
-- "docs"
+  - "source"
+  - "docs"
 plugins:
   bandit:
     enabled: true
+    checks:
+      blacklist:
+        enabled: false
