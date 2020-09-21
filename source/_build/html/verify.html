@@ -36,6 +36,35 @@
   <div class="section" id="module-verify">
 <span id="verify-module"></span><h1>verify module<a class="headerlink" href="#module-verify" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
+<dt id="verify.make_requests">
+<code class="descclassname">verify.</code><code class="descname">make_requests</code><span class="sig-paren">(</span><em>zone_id</em>, <em>record_id</em>, <em>api_key</em><span class="sig-paren">)</span><a class="headerlink" href="#verify.make_requests" title="Permalink to this definition">¶</a></dt>
+<dd><p>makes request for dns records for record id specifed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>zone_id</strong> – (str) zone id</li>
+<li><strong>record_id</strong> – (str) dns record id</li>
+<li><strong>api_key</strong> – (str) api key for cloudflare api</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Return response:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first last">(requests object) the response object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="verify.request_status">
+<code class="descclassname">verify.</code><code class="descname">request_status</code><span class="sig-paren">(</span><em>response</em>, <em>requested</em><span class="sig-paren">)</span><a class="headerlink" href="#verify.request_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>function for internal use</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="verify.verify">
 <code class="descclassname">verify.</code><code class="descname">verify</code><span class="sig-paren">(</span><em>settings</em><span class="sig-paren">)</span><a class="headerlink" href="#verify.verify" title="Permalink to this definition">¶</a></dt>
 <dd><p>function to verify all settings are valid.</p>
@@ -44,6 +73,8 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>settings</strong> – (dict) needs to be in the form of the dict returned by read data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">bool</td>
 </tr>
 </tbody>
 </table>
