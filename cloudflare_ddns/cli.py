@@ -17,11 +17,12 @@ def verify_record():
     print("settings has passed the intgerty check")
         # check for usage info handel
        
-
-def main():
+def check_connection():
     connected = False
     while connected is False:
         connected = is_connected()
+def main():
+    check_connection
     num_experssions = len(argv)
     if num_experssions == 1:
         getrecords()
