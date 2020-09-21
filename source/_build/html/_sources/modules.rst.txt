@@ -5,4 +5,5 @@ cloudflare_ddns
    :maxdepth: 4
 
    cloudflareddns
+   gen_settings
    verify
