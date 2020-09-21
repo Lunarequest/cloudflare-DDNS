@@ -1,6 +1,8 @@
 # CloudFlare DDNS
 
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+[![Maintainability](https://api.codeclimate.com/v1/badges/aaca3fe4da8a8389f639/maintainability)](https://codeclimate.com/github/advaithm/cloudflare-DDNS/maintainability)
+
 
 This script will update cloudflare dns with new dynamic ips when the current one changes. Please check the settings.yml file to ensure its correct.
 
@@ -18,3 +20,4 @@ $ cloudflareddns # this will get record ids
 ```
 
 after running this you can run `cloudflareddns --ddns` to skip getting the record id as it is stored in the settings.yml
+You can verify if the settings.yml is correct by running `cloudflareddns --verify`
