@@ -144,7 +144,7 @@ def read_data():
                         "subdoamins": subdomain}
     return data
 def read_data_record():
-    """function to read data include record ids from settings.yml"""
+    """function to read data include record ids from settings.yml """
     with open("settings.yml", "r") as f:
         # opens settings.yml and loads
         settings = yaml.safe_load(f.read())
