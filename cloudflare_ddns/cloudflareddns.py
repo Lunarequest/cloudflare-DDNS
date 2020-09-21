@@ -177,16 +177,14 @@ def parse_data(data,domain):
                 return record_id
             else:
                 return None
+def verify_data(data):
+    if len(data["subdoamins"]) == len(data["subdomains_id"]):
+        return data
+    else:
+        print("unable to get record id of one or  more subdomain")
+        exit(1)
 
-def get_record_id(settings):
-    """
-    gets record ids using settings which uses the dict returned from read data
-
-    :returns: dict{api_key,domain,zone_id,record_id, subdomains, domains_id}
-    api_key,domain,zone_id,record_id are of the type string
-    subdomains, domains_id are lists
-    """
-    def get_record(api_key,zone_id):
+def get_record(api_key,zone_id):
         headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
@@ -196,6 +194,14 @@ def get_record_id(settings):
             headers=headers,
         )
         return response
+def get_record_id(settings):
+    """
+    gets record ids using settings which uses the dict returned from read data
+
+    :returns: dict{api_key,domain,zone_id,record_id, subdomains, domains_id}
+    api_key,domain,zone_id,record_id are of the type string
+    subdomains, domains_id are lists
+    """
     api_key = settings["api_key"]
     domain = settings["domain"]
     zone_id = settings["zone_id"]
@@ -203,19 +209,16 @@ def get_record_id(settings):
     data = response.json()  # loads the json response
     data = data["result"]
     record_id =parse_data(data,domain)
-    if record_id != None:
-        if settings["subdoamins"] !=None:
-                subdomain = settings["subdoamins"]
-                domains_id = []
-                for domains in subdomain:
-                    x = parse_data(data,domain)
-                    domains_id.append(x)
+    if record_id == None:
+        print("failed to get record id")
+    if settings["subdoamins"] !=None:
+        subdomain = settings["subdoamins"]
+        domains_id = []
+        for domains in subdomain:
+            x = parse_data(data,domains)
+            domains_id.append(x)
                 # checks if all domains ids have subdomains
-                if len(domains_id) != len(subdomain):
-                    print("unable to get record id of one or  more subdomain")
-                    exit(1)
-                # updates settings
-                data = {
+            data = {
                         "api_key": api_key,
                         "domain": domain,
                         "zone_id": zone_id,
@@ -223,13 +226,15 @@ def get_record_id(settings):
                         "subdoamins": subdomain,
                         "subdomains_id": domains_id,
                     }  
-                return data     
-        else:
-            data = {
+            return data 
+                # updates settings
+            
+    else:
+        data = {
                         "api_key": api_key,
                         "domain": domain,
                         "zone_id": zone_id,
                         "record_id": record_id,
                     }
-            return data
+        return data
             
