@@ -22,6 +22,18 @@ def is_connected():
         print(e)
     return False
 
+def check_status(response):
+# checks if record exists
+    if response.json()["errors"][0]["code"] == 81058:
+        logging.error("there was a conficting domain please report this")
+    else:
+        # if there is a unknow error print some debug info
+        print(
+            "there was a error in the update the response may help debug it: \n",
+            response,
+            "\n",
+            response.json(),
+        )
 
 def update(domain, zone_id, record_id, api_key):
     """updates the ip
@@ -71,20 +83,8 @@ def update(domain, zone_id, record_id, api_key):
             print(f"updated {domain}")
             return True
         else:
-            # checks if record exists
-            if response.json()["errors"][0]["code"] == 81058:
-                logging.error("there was a conficting domain please report this")
-                return False
-            else:
-                # if there is a unknow error print some debug info
-                print(
-                    "there was a error in the update the response may help debug it: \n",
-                    response,
-                    "\n",
-                    response.json(),
-                )
-                return False
-
+            check_status(response)
+            return False
 
 def ddns():
     """
