@@ -176,8 +176,8 @@ def get_record_id(settings):
     :returns: dict{api_key,domain,zone_id,record_id, subdomains, domains_id}
     api_key,domain,zone_id,record_id are of the type string
     subdomains, domains_id are lists
-
     """
+
     api_key = settings["api_key"]
     domain = settings["domain"]
     zone_id = settings["zone_id"]
