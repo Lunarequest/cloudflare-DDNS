@@ -22,33 +22,6 @@ def is_connected():
         print(e)
     return False
 
-def gen_settings():
-    """function to genrate the settings.yaml
-    :return: None
-    """
-    api_key = input("input api key: ").strip().replace(" ","")
-    domain = input("input target domain: ").strip().replace(" ","")
-    zone_id = input("input zone id: ").strip().replace(" ","")
-    check = int(input("input number of subdomains: "))
-    if check == 0:
-        creds = {"api_key": api_key, "domain": domain, "zone_id": zone_id}
-    else:
-        subdomains = []
-        for i in range(0, check):
-            x = input("input subdomain: ").strip().replace(" ","")
-            subdomains.append(x)
-        creds = {
-            "api_key": api_key,
-            "domain": domain,
-            "zone_id": zone_id,
-            "subdoamins": subdomains,
-        }
-    x = yaml.dump(creds)
-    logging.info(creds)
-    with open(f"settings.yml", "w") as f:
-        f.write(x)
-        f.close()
-
 
 def update(domain, zone_id, record_id, api_key):
     """updates the ip
@@ -256,42 +229,3 @@ def get_record_id(settings):
                     }
             return data
             
-
-def main():
-    """called by cli. probably can't be used anywhere"""
-    # check if argv has a argument
-    if len(argv) < 2:
-        connected = False
-        while connected == False:
-            connected = is_connected()
-        settings = read_data()
-        data = get_record_id(settings)
-        write_data(data)
-        ddns()
-    # check if that argument is --ddns
-    elif argv[1] == "--ddns":
-        # check if internet is connected
-        connected = False
-        while connected == False:
-            connected = is_connected()
-        ddns()
-    elif argv[1] == "--gen-settings":
-        gen_settings()
-    elif argv[1] == "--verify":
-        settings = read_data_record()
-        failed = verify(settings)
-        if failed == True:
-            print("settings has failed the intgerty check")
-        else:
-            print("settings has passed the intgerty check")
-    # check for usage info handel
-    elif argv[1] == "-h":
-        print(
-            "usage update.py <args:optional>\n-h for this message\n--gen-settings to create settings.yml\n--ddns skip directly to DDNS updateing"
-        )
-    else:
-        # error out
-        print("Too many args. ")
-
-if __name__ == "__main__":
-    main()

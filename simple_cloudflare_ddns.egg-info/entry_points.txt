@@ -1,3 +1,0 @@
-[console_scripts]
-cloudflareddns = cloudflare_ddns.cloudflareddns:main
-
