@@ -2,7 +2,7 @@
 
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 [![Maintainability](https://api.codeclimate.com/v1/badges/aaca3fe4da8a8389f639/maintainability)](https://codeclimate.com/github/advaithm/cloudflare-DDNS/maintainability)
-
+[![security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
 
 This script will update cloudflare dns with new dynamic ips when the current one changes. Please check the settings.yml file to ensure its correct.
 
