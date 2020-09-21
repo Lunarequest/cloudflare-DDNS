@@ -6,7 +6,7 @@ import yaml
 import logging
 from ipaddress import ip_address
 from sys import exit, argv
-from cloudflare_ddns.verify import verify
+from cloudflare_ddns.verify import make_requests
 
 def is_connected():
     """function to check if there is a internet connection returns true 
@@ -169,6 +169,15 @@ def read_data_record():
                             "subdomains_id":subdomains_id
                             }
     return data
+
+def parse_data(data,domain):
+    for record in data:
+            if record["name"] == domain and record["type"] == "A":
+                record_id = record["id"]
+                return record_id
+            else:
+                return None
+
 def get_record_id(settings):
     """
     gets record ids using settings which uses the dict returned from read data
@@ -177,35 +186,30 @@ def get_record_id(settings):
     api_key,domain,zone_id,record_id are of the type string
     subdomains, domains_id are lists
     """
-
-    api_key = settings["api_key"]
-    domain = settings["domain"]
-    zone_id = settings["zone_id"]
-        # creates headers for request
-    headers = {
+    def get_record(api_key,zone_id):
+        headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
         }
-    response = requests.get(
+        response = requests.get(
             f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records",
             headers=headers,
         )
+        return response
+    api_key = settings["api_key"]
+    domain = settings["domain"]
+    zone_id = settings["zone_id"]
+    response=get_record(api_key,zone_id)
     data = response.json()  # loads the json response
     data = data["result"]
-    record_id = None
-        # parese the data until all records have data
-    for record in data:
-            if record["name"] == domain and record["type"] == "A":
-                record_id = record["id"]
+    record_id =parse_data(data,domain)
     if record_id != None:
         if settings["subdoamins"] !=None:
                 subdomain = settings["subdoamins"]
                 domains_id = []
-                for record in data:
-                    for domains in subdomain:
-                        if str(record["name"]) == str(domains):
-                            x = record["id"]
-                            domains_id.append(x)
+                for domains in subdomain:
+                    x = parse_data(data,domain)
+                    domains_id.append(x)
                 # checks if all domains ids have subdomains
                 if len(domains_id) != len(subdomain):
                     print("unable to get record id of one or  more subdomain")
