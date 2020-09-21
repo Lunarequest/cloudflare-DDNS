@@ -5,8 +5,7 @@ import json
 import yaml
 import logging
 from ipaddress import ip_address
-from sys import exit, argv
-from cloudflare_ddns.verify import make_requests
+from sys import exit
 
 def is_connected():
     """function to check if there is a internet connection returns true 
@@ -175,8 +174,7 @@ def parse_data(data,domain):
             if record["name"] == domain and record["type"] == "A":
                 record_id = record["id"]
                 return record_id
-            else:
-                return None
+    return None
 def verify_data(data):
     if len(data["subdoamins"]) == len(data["subdomains_id"]):
         return data
@@ -211,14 +209,16 @@ def get_record_id(settings):
     record_id =parse_data(data,domain)
     if record_id == None:
         print("failed to get record id")
-    if settings["subdoamins"] !=None:
+        exit(1)
+    if settings["subdoamins"]:
         subdomain = settings["subdoamins"]
         domains_id = []
         for domains in subdomain:
+            print(domains)
             x = parse_data(data,domains)
             domains_id.append(x)
                 # checks if all domains ids have subdomains
-            data = {
+        data = {
                         "api_key": api_key,
                         "domain": domain,
                         "zone_id": zone_id,
@@ -226,8 +226,7 @@ def get_record_id(settings):
                         "subdoamins": subdomain,
                         "subdomains_id": domains_id,
                     }  
-            return data 
-                # updates settings
+        return data 
             
     else:
         data = {
