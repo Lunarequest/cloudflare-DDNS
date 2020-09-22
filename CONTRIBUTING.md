@@ -45,7 +45,7 @@ Please include the following with each issue:
 
 ## Contributing Fixes
 
-If you are interested in writing code to fix issues or add features, open a PR or issue to add or bring up the issue. please ensure all code is run through the [black linter](https://github.com/psf/black) to ensure all the code is the same.
+If you are interested in writing code to fix issues or add features, open a PR or issue to add or bring up the issue. please ensure all code is run through the [black linter](https://github.com/psf/black).
 
 # Thank You
 

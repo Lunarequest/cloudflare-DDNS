@@ -1,4 +1,5 @@
 import yaml,logging
+from cloudflare_ddns.cloudflareddns import read_data_record
 def gen_settings():
     """function to genrate the settings.yaml
     :return: None
@@ -25,3 +26,7 @@ def gen_settings():
     with open(f"settings.yml", "w") as f:
         f.write(x)
         f.close()
+
+def edit():
+    data = read_data_record()
+    edit = input("")

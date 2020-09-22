@@ -6,3 +6,4 @@ cloudflare_ddns.egg-info
 build
 dist
 simple_cloudflare_ddns.egg-info
+__pycache__
