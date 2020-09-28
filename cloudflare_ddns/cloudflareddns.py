@@ -4,7 +4,6 @@ import socket
 import json
 import yaml
 import logging
-from ipaddress import ip_address
 from sys import exit
 
 
@@ -37,7 +36,7 @@ def check_status(response):
         )
 
 
-def update(domain, zone_id, record_id, api_key, force):
+def update(domain, zone_id, record_id, api_key):
     """updates the ip
 
     :param domain: (str) The domain
@@ -64,9 +63,10 @@ def update(domain, zone_id, record_id, api_key, force):
     ip = str(response.json()["result"]["content"])
     print("cloudflare ip: ", ip, " dynamic ip: ", dynamic_ip)
     # compares the current public ip with the one set in cloud flare
-    if ip_address(ip) == ip_address(dynamic_ip) or force == True:
+    if str(ip) == str(dynamic_ip):
         # if set prints warrning
         print(f"ip for {domain} is already set")
+        return False
     else:
         logging.info("current ip: " + dynamic_ip, "cloudflare ip: " + ip)
         # prepares data for json injection to update via api
@@ -85,8 +85,7 @@ def update(domain, zone_id, record_id, api_key, force):
             data=data,
         )
         # checks if resposne returns a 200
-        response_status = response.json()["success"]
-        if response_status:
+        if response.status_code == 200:
             print(f"updated {domain}")
             return True
         else:
@@ -112,20 +111,15 @@ def ddns():
             subdomains = settings["subdoamins"]
             subdomains_id = settings["subdomains_id"]
             f.close()
-            force = False
-            update(domain, zone_id, record_id, api_key, force)  # updates root domain
+            update(domain, zone_id, record_id, api_key)  # updates root domain
             index = 0
-            force = False
             for domain_name in subdomains:  # updates each subdomain
                 domain_id = subdomains_id[index]
-                check_update = update(domain_name, zone_id, domain_id, api_key, force)
-                if check_update == True:
-                    force = True
+                check_update = update(domain_name, zone_id, domain_id, api_key)
                 index = +1
         except:  # expects if subdomains do exist
             f.close()
-            force = False
-            update(domain, zone_id, record_id, api_key, force)
+            update(domain, zone_id, record_id, api_key)
 
 
 def write_data(data):
