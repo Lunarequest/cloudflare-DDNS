@@ -44,6 +44,7 @@ def update(domain, zone_id, record_id, api_key, force):
     :param zone_id: (str) The domains zone id can be found in the cloudflare dashbboard
     :param record_id: (str) The record id
     :param api_key: (str) The api key used to make requests
+    :param force: (bool) skip checks and update api anyway
 
     :return: bool true if update succeeded false if failed
     """
@@ -111,10 +112,8 @@ def ddns():
             subdomains = settings["subdoamins"]
             subdomains_id = settings["subdomains_id"]
             f.close()
-            force=False
-            update(
-                domain, zone_id, record_id, api_key, force
-            )  # updates root domain
+            force = False
+            update(domain, zone_id, record_id, api_key, force)  # updates root domain
             index = 0
             force = False
             for domain_name in subdomains:  # updates each subdomain
@@ -125,8 +124,8 @@ def ddns():
                 index = +1
         except:  # expects if subdomains do exist
             f.close()
-            force=False
-            update(domain, zone_id, record_id, api_key,force)
+            force = False
+            update(domain, zone_id, record_id, api_key, force)
 
 
 def write_data(data):
