@@ -1,19 +1,21 @@
-import yaml,logging
+import yaml, logging
 from cloudflare_ddns.cloudflareddns import read_data
+
+
 def gen_settings():
     """function to genrate the settings.yaml
     :return: None
     """
-    api_key = input("input api key: ").strip().replace(" ","") # nosec
-    domain = input("input target domain: ").strip().replace(" ","") # nosec
-    zone_id = input("input zone id: ").strip().replace(" ","") # nosec
-    check = int(input("input number of subdomains: ")) # nosec
+    api_key = input("input api key: ").strip().replace(" ", "")  # nosec
+    domain = input("input target domain: ").strip().replace(" ", "")  # nosec
+    zone_id = input("input zone id: ").strip().replace(" ", "")  # nosec
+    check = int(input("input number of subdomains: "))  # nosec
     if check == 0:
         creds = {"api_key": api_key, "domain": domain, "zone_id": zone_id}
     else:
         subdomains = []
         for i in range(0, check):
-            x = input("input subdomain: ").strip().replace(" ","") # nosec
+            x = input("input subdomain: ").strip().replace(" ", "")  # nosec
             subdomains.append(x)
         creds = {
             "api_key": api_key,
@@ -27,7 +29,8 @@ def gen_settings():
         f.write(x)
         f.close()
 
+
 def edit():
     data = read_data()
     print(data)
-    edit_choice = input("")
+    edit_choice = input("")  # nosec
