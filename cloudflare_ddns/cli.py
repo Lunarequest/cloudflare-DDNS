@@ -1,5 +1,5 @@
 from cloudflare_ddns.cloudflareddns import is_connected, get_record_id, ddns, verify_data
-from cloudflare_ddns.gen_settings import gen_settings
+from cloudflare_ddns.gen_settings import gen_settings, edit
 from cloudflare_ddns.verify import verify
 from cloudflare_ddns.internals import  read_data_record, read_data, write_data
 from sys import argv, exit
@@ -35,6 +35,8 @@ def check_arugment(argument):
         print(
                 "usage update.py <args:optional>\n-h for this message\n--gen-settings to create settings.yml\n--ddns skip directly to DDNS updateing"
             )
+    elif argument=="--edit":
+        edit()
 def main():
     check_connection
     num_experssions = len(argv)

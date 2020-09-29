@@ -60,7 +60,6 @@ def update(domain, zone_id, record_id, api_key):
 
     # extracts the ip
     ip = str(response.json()["result"]["content"])
-    print("cloudflare ip: ", ip, " dynamic ip: ", dynamic_ip)
     # compares the current public ip with the one set in cloud flare
     if str(ip) == str(dynamic_ip):
         # if set prints warrning
@@ -120,76 +119,12 @@ def ddns():
             f.close()
             update(domain, zone_id, record_id, api_key)
 
-
-def write_data(data):
-    """writes data to settings.yml
-
-    :param data: (dict)  the dict is the same as returned by get_record_id
-
-    :return: None
-    """
-    with open("settings.yml", "w") as f:
-        data = yaml.dump(data)
-        f.write(data)
-        f.close()
-
-
-def read_data():
-    """function to read data from settings.yml"""
-    with open("settings.yml", "r") as f:
-        # opens settings.yml and loads
-        settings = yaml.safe_load(f.read())
-        domain = settings["domain"]
-        api_key = settings["api_key"]
-        zone_id = settings["zone_id"]
-        try:
-            subdomain = settings["subdoamins"]
-        except:
-            subdomain = None
-        f.close()
-    data = {
-        "api_key": api_key,
-        "domain": domain,
-        "zone_id": zone_id,
-        "subdoamins": subdomain,
-    }
-    return data
-
-
-def read_data_record():
-    """function to read data include record ids from settings.yml """
-    with open("settings.yml", "r") as f:
-        # opens settings.yml and loads
-        settings = yaml.safe_load(f.read())
-        domain = settings["domain"]
-        api_key = settings["api_key"]
-        zone_id = settings["zone_id"]
-        record_id = settings["record_id"]
-        try:
-            subdomain = settings["subdoamins"]
-            subdomains_id = settings["subdomains_id"]
-        except:
-            subdomain = None
-            subdomains_id = None
-        f.close()
-    data = {
-        "api_key": api_key,
-        "domain": domain,
-        "zone_id": zone_id,
-        "record_id": record_id,
-        "subdoamins": subdomain,
-        "subdomains_id": subdomains_id,
-    }
-    return data
-
-
 def parse_data(data, domain):
     for record in data:
         if record["name"] == domain and record["type"] == "A":
             record_id = record["id"]
             return record_id
     return None
-
 
 def verify_data(data):
     if len(data["subdoamins"]) == len(data["subdomains_id"]):
@@ -233,7 +168,6 @@ def get_record_id(settings):
         subdomain = settings["subdoamins"]
         domains_id = []
         for domains in subdomain:
-            print(domains)
             x = parse_data(data, domains)
             domains_id.append(x)
             # checks if all domains ids have subdomains
@@ -256,6 +190,3 @@ def get_record_id(settings):
         }
         return data
 
-
-if __name__ == "__main__":
-    ddns()

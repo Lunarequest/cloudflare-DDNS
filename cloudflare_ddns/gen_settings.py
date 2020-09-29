@@ -1,13 +1,13 @@
 import yaml, logging
-from cloudflare_ddns.internals import read_data
+from cloudflare_ddns.internals import read_data,write_data
 
-
+# nosec is for bandit as it flags input as a vunriblity siting python 2 issues
 def gen_settings():
     """function to genrate the settings.yaml
     :return: None
     """
     api_key = input("input api key: ").strip().replace(" ", "")  # nosec
-    domain = input("input target domain: ").strip().replace(" ", "")  # nosec
+    domain = input("input root domain: ").strip().replace(" ", "")  # nosec
     zone_id = input("input zone id: ").strip().replace(" ", "")  # nosec
     check = int(input("input number of subdomains: "))  # nosec
     if check == 0:
@@ -32,5 +32,14 @@ def gen_settings():
 
 def edit():
     data = read_data()
-    print(data)
-    edit_choice = input("")  # nosec
+    print(f"1. {data['domain']}")
+    n=2
+    for domain in data["subdoamins"]:
+        print(f"{n}. {domain}")
+        n+=1
+    edit_choice = input("enter number of record to edit: ")  # nosec
+    if edit_choice ==1:
+        data['domain']=input("update root domain: ")
+    else:
+        data['subdoamins'][int(edit_choice)-2]=input("update subdomain: ")
+        write_data(data)

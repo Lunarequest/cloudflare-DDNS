@@ -1,4 +1,6 @@
 import yaml
+"""all functions here can not be used by other programs"""
+
 def check_returned(check_update):
     if check_update:
         force = True
