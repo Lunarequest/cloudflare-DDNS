@@ -1,6 +1,7 @@
-from cloudflare_ddns.cloudflareddns import is_connected, read_data_record, read_data, get_record_id, write_data, ddns, verify_data
+from cloudflare_ddns.cloudflareddns import is_connected, get_record_id, ddns, verify_data
 from cloudflare_ddns.gen_settings import gen_settings
 from cloudflare_ddns.verify import verify
+from cloudflare_ddns.internals import  read_data_record, read_data, write_data
 from sys import argv, exit
 
 def getrecords():

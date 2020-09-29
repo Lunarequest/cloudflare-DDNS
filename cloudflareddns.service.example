@@ -1,11 +1,12 @@
 [Unit]
-Description=A script to update the dns ip when required
+Description=A script to update the dns ip when required. 
+# This assumes the public ip will change when your system reboots
 After=network.target
 [Service]
 User=A unprivallged user
 Group=a group
 WorkingDirectory=path to folder
 Environment="PATH=/usr/bin/"
-ExecStart=path to folder/Update.py --ddns
+ExecStart=cloudflareddns --ddns
 [Install]
 WantedBy=multi-user.target

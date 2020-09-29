@@ -43,7 +43,6 @@ def update(domain, zone_id, record_id, api_key):
     :param zone_id: (str) The domains zone id can be found in the cloudflare dashbboard
     :param record_id: (str) The record id
     :param api_key: (str) The api key used to make requests
-    :param force: (bool) skip checks and update api anyway
 
     :return: bool true if update succeeded false if failed
     """

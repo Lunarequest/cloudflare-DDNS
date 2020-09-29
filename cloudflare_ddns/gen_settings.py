@@ -1,5 +1,5 @@
 import yaml, logging
-from cloudflare_ddns.cloudflareddns import read_data
+from cloudflare_ddns.internals import read_data
 
 
 def gen_settings():
