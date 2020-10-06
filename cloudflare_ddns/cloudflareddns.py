@@ -36,12 +36,12 @@ def check_status(response):
         )
 
 
-def update(domain, zone_id, record_id, api_key):
+def update(domains, zone_id, record_ids, api_key):
     """updates the ip
 
-    :param domain: (str) The domain
+    :param domains: (array) The domain
     :param zone_id: (str) The domains zone id can be found in the cloudflare dashbboard
-    :param record_id: (str) The record id
+    :param record_ids: (array) The record id
     :param api_key: (str) The api key used to make requests
 
     :return: bool true if update succeeded false if failed
@@ -54,7 +54,7 @@ def update(domain, zone_id, record_id, api_key):
     headers = {"content-type": "application/json", "Authorization": f"Bearer {api_key}"}
     # gets the record via api
     response = requests.get(
-        f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records/{record_id}",
+        f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records/{record_ids[1]}",
         headers=headers,
     )
 
@@ -63,32 +63,34 @@ def update(domain, zone_id, record_id, api_key):
     # compares the current public ip with the one set in cloud flare
     if str(ip) == str(dynamic_ip):
         # if set prints warrning
-        print(f"ip for {domain} is already set")
+        print(f"ips for domains/subdomains in this zone are already set")
         return False
     else:
-        logging.info("current ip: " + dynamic_ip, "cloudflare ip: " + ip)
-        # prepares data for json injection to update via api
-        data = {
-            "type": "A",
-            "name": f"{domain}",
-            "content": f"{dynamic_ip}",
-            "ttl": 1,
-            "proxied": True,
-        }
-        # dumps as json
-        data = json.dumps(data)
-        response = requests.put(
-            f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records/{record_id}",
-            headers=headers,
-            data=data,
-        )
-        # checks if resposne returns a 200
-        if response.status_code == 200:
-            print(f"updated {domain}")
-            return True
-        else:
-            check_status(response)
-            return False
+        index = 0
+        for domain in domains:
+            logging.info("current ip: " + dynamic_ip, "cloudflare ip: " + ip)
+            # prepares data for json injection to update via api
+            data = {
+                "type": "A",
+                "name": f"{domain}",
+                "content": f"{dynamic_ip}",
+                "ttl": 1,
+                "proxied": True,
+            }
+            # dumps as json
+            data = json.dumps(data)
+            response = requests.put(
+                f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records/{record_ids[index]}",
+                headers=headers,
+                data=data,
+            )
+            index+=1
+            # checks if resposne returns a 200
+            if response.status_code == 200:
+                print(f"updated {domain}")
+            else:
+                check_status(response)
+                return False
 
 
 def ddns():
@@ -109,15 +111,22 @@ def ddns():
             subdomains = settings["subdoamins"]
             subdomains_id = settings["subdomains_id"]
             f.close()
-            update(domain, zone_id, record_id, api_key)  # updates root domain
-            index = 0
+            domains = []
+            domains.append("domain")
             for domain_name in subdomains:  # updates each subdomain
-                domain_id = subdomains_id[index]
-                check_update = update(domain_name, zone_id, domain_id, api_key)
-                index = +1
+                domains.append(domain_name)
+            record_ids = []
+            record_ids.append(record_id)
+            for record in subdomains_id:
+                record_ids.append(record)
+            update(domains,zone_id,record_ids,api_key)
         except:  # expects if subdomains do exist
             f.close()
-            update(domain, zone_id, record_id, api_key)
+            domains = []
+            domains.append(domain)
+            record_ids = []
+            record_ids.append(record_id)
+            update(domains, zone_id, record_ids, api_key)
 
 def parse_data(data, domain):
     for record in data:
@@ -190,3 +199,5 @@ def get_record_id(settings):
         }
         return data
 
+if __name__ == "__main__":
+    ddns()
