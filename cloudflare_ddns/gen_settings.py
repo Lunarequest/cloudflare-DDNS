@@ -39,7 +39,7 @@ def edit():
         n+=1
     edit_choice = input("enter number of record to edit: ")  # nosec
     if edit_choice ==1:
-        data['domain']=input("update root domain: ")
+        data['domain']=input("update root domain: ") # nosec
     else:
-        data['subdoamins'][int(edit_choice)-2]=input("update subdomain: ")
+        data['subdoamins'][int(edit_choice)-2]=input("update subdomain: ") # nosec
         write_data(data)

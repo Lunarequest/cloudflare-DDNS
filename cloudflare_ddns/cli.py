@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from cloudflare_ddns.cloudflareddns import is_connected, get_record_id, ddns, verify_data
 from cloudflare_ddns.gen_settings import gen_settings, edit
 from cloudflare_ddns.verify import verify
