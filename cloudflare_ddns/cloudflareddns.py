@@ -59,7 +59,7 @@ def ip_update(domain, zone_id,record_id, headers):
         print(f"updated {domain}")
     else:
         check_status(response)
-        return False
+        exit(1)
 
 def make_request(headers, zone_id, record_id):
     response = requests.get(
@@ -99,8 +99,6 @@ def update(domains, zone_id, record_ids, api_key):
             logging.info("current ip: " + dynamic_ip, "cloudflare ip: " + ip)
             check = ip_update(domain,zone_id,record_ids[index], headers)
             index+=1
-            if check==False:
-                return check
         return True
             
 
