@@ -47,7 +47,7 @@ def edit():
 def edit_api():
     data = read_data()
     print(f"current api key: {data['api_key']}")
-    update = input("do you wish to update this y/n: ")
+    update = input("do you wish to update this y/n: " ) # nosec
     if update.lower()=="y":
-        data["api_key"]=input("enter new api key: ")
+        data["api_key"]=input("enter new api key: ") # nosec
     write_data(data)

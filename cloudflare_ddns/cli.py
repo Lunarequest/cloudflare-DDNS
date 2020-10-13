@@ -25,6 +25,13 @@ def check_connection():
     connected = False
     while connected is False:
         connected = is_connected()
+
+def edit_chose(arg):
+    if arg=="--edit":
+        edit()
+    elif arg=="--edit-api":
+        edit_api()
+
 def check_arugment(argument):
     if argument == "--ddns":
         ddns()
@@ -36,10 +43,8 @@ def check_arugment(argument):
         print(
                 "usage update.py <args:optional>\n-h for this message\n--gen-settings to create settings.yml\n--ddns skip directly to DDNS updateing"
             )
-    elif argument=="--edit":
-        edit()
-    elif argument=="--edit-api":
-        edit_api()
+    elif argument.contains("--edit"):
+        edit_chose(argument)
 def main():
     check_connection
     num_experssions = len(argv)
