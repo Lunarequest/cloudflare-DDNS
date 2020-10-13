@@ -35,10 +35,11 @@ def check_status(response):
             response.json(),
         )
 
-def ip_update(domain, dynamic_ip, zone_id,record_id, headers):
-    
+def ip_update(domain, zone_id,record_id, headers):
+    dynamic_ip = str(
+        requests.get("http://api64.ipify.org?format=json").json()["ip"]).strip()
             # prepares data for json injection to update via api
-            data = {
+    data = {
                 "type": "A",
                 "name": f"{domain}",
                 "content": f"{dynamic_ip}",
@@ -46,8 +47,8 @@ def ip_update(domain, dynamic_ip, zone_id,record_id, headers):
                 "proxied": True,
             }
             # dumps as json
-            data = json.dumps(data)
-            response = requests.put(
+    data = json.dumps(data)
+    response = requests.put(
                 f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records/{record_id}",
                 headers=headers,
                 data=data,
@@ -85,7 +86,7 @@ def update(domains, zone_id, record_ids, api_key):
         index = 0
         for domain in domains:
             logging.info("current ip: " + dynamic_ip, "cloudflare ip: " + ip)
-            ip_update(domain,dynamic_ip,zone_id,record_ids[index], headers)
+            ip_update(domain,zone_id,record_ids[index], headers)
             index+=1
             # checks if resposne returns a 200
             if response.status_code == 200:
