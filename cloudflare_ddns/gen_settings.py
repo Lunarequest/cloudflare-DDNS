@@ -43,3 +43,11 @@ def edit():
     else:
         data['subdoamins'][int(edit_choice)-2]=input("update subdomain: ") # nosec
         write_data(data)
+
+def edit_api():
+    data = read_data()
+    print(f"current api key: {data['api_key']}")
+    update = input("do you wish to update this y/n: ")
+    if update.lower()=="y":
+        data["api_key"]=input("enter new api key: ")
+    write_data(data)
