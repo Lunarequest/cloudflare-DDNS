@@ -53,6 +53,12 @@ def ip_update(domain, zone_id,record_id, headers):
                 headers=headers,
                 data=data,
             )
+    # checks if resposne returns a 200
+    if response.status_code == 200:
+        print(f"updated {domain}")
+    else:
+        check_status(response)
+        return False
 def update(domains, zone_id, record_ids, api_key):
     """updates the ip
 
@@ -86,14 +92,12 @@ def update(domains, zone_id, record_ids, api_key):
         index = 0
         for domain in domains:
             logging.info("current ip: " + dynamic_ip, "cloudflare ip: " + ip)
-            ip_update(domain,zone_id,record_ids[index], headers)
+            check = ip_update(domain,zone_id,record_ids[index], headers)
             index+=1
-            # checks if resposne returns a 200
-            if response.status_code == 200:
-                print(f"updated {domain}")
-            else:
-                check_status(response)
-                return False
+            if check==False:
+                return check
+        return True
+            
 
 
 def ddns():
