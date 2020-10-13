@@ -2,6 +2,7 @@
 import requests
 import socket
 import json
+from requests.models import Response
 import yaml
 import logging
 from sys import exit
@@ -59,6 +60,14 @@ def ip_update(domain, zone_id,record_id, headers):
     else:
         check_status(response)
         return False
+
+def make_request(headers, zone_id, record_id):
+    response = requests.get(
+        f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records/{record_id}",
+        headers=headers,
+    )
+    return response
+
 def update(domains, zone_id, record_ids, api_key):
     """updates the ip
 
@@ -76,11 +85,7 @@ def update(domains, zone_id, record_ids, api_key):
     # create request headers
     headers = {"content-type": "application/json", "Authorization": f"Bearer {api_key}"}
     # gets the record via api
-    response = requests.get(
-        f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records/{record_ids[1]}",
-        headers=headers,
-    )
-
+    response=make_request(headers,zone_id,record_ids[1])
     # extracts the ip
     ip = str(response.json()["result"]["content"])
     # compares the current public ip with the one set in cloud flare
