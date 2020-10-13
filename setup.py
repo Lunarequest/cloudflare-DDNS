@@ -7,7 +7,8 @@ HERE = pathlib.Path(__file__).parent
 # The text of the README file
 README = (HERE / "README.md").read_text()
 
-setup(name="simple-cloudflare-ddns",
+setup(
+    name="simple-cloudflare-ddns",
     version="3.0.0",
     description="A super simple cli tool to update dns records",
     long_description=README,
@@ -28,7 +29,7 @@ setup(name="simple-cloudflare-ddns",
     ],
     packages=["cloudflare_ddns"],
     include_package_data=True,
-    install_requires=["requests", "pyyaml","sockets"],
+    install_requires=["requests", "pyyaml", "sockets"],
     entry_points={
         "console_scripts": [
             "cloudflareddns=cloudflare_ddns.cli:main",

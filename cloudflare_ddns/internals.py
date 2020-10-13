@@ -1,5 +1,7 @@
 import yaml
+
 """all functions here can not be used by other programs"""
+
 
 def check_returned(check_update):
     if check_update:
@@ -7,6 +9,7 @@ def check_returned(check_update):
     else:
         force = False
     return force
+
 
 def write_data(data):
     """writes data to settings.yml

@@ -1,16 +1,23 @@
 #!/usr/bin/python
-from cloudflare_ddns.cloudflareddns import is_connected, get_record_id, ddns, verify_data
+from cloudflare_ddns.cloudflareddns import (
+    is_connected,
+    get_record_id,
+    ddns,
+    verify_data,
+)
 from cloudflare_ddns.gen_settings import gen_settings, edit, edit_api
 from cloudflare_ddns.verify import verify
-from cloudflare_ddns.internals import  read_data_record, read_data, write_data
+from cloudflare_ddns.internals import read_data_record, read_data, write_data
 from sys import argv, exit
+
 
 def getrecords():
     settings = read_data()
     data = get_record_id(settings)
     data = verify_data(data)
-    write_data(data)    
+    write_data(data)
     ddns()
+
 
 def verify_record():
     settings = read_data_record()
@@ -19,32 +26,37 @@ def verify_record():
         print("settings has failed the intgerty check")
         exit(0)
     print("settings has passed the intgerty check")
-        # check for usage info handel
-       
+    # check for usage info handel
+
+
 def check_connection():
     connected = False
     while connected is False:
         connected = is_connected()
 
+
 def edit_chose(arg):
-    if arg=="--edit":
+    if arg == "--edit":
         edit()
-    elif arg=="--edit-api":
+    elif arg == "--edit-api":
         edit_api()
+
 
 def check_arugment(argument):
     if argument == "--ddns":
         ddns()
-    elif  argument == "--gen-settings":
+    elif argument == "--gen-settings":
         gen_settings()
     elif argument == "--verify":
         verify_record()
     elif argument == "-h":
         print(
-                "usage update.py <args:optional>\n-h for this message\n--gen-settings to create settings.yml\n--ddns skip directly to DDNS updateing"
-            )
+            "usage update.py <args:optional>\n-h for this message\n--gen-settings to create settings.yml\n--ddns skip directly to DDNS updateing"
+        )
     elif argument.contains("--edit"):
         edit_chose(argument)
+
+
 def main():
     check_connection
     num_experssions = len(argv)
@@ -56,5 +68,7 @@ def main():
     else:
         # error out
         print("Too many args. ")
+
+
 if __name__ == "__main__":
     main()
