@@ -56,9 +56,7 @@ def subdomain(arg):
 
 
 def check_arugment(argument):
-    if argument == "--ddns":
-        ddns()
-    elif argument == "--gen-settings":
+    if argument == "--gen-settings":
         gen_settings()
     elif argument == "--verify":
         verify_record()
@@ -79,7 +77,10 @@ def main():
         getrecords()
     elif num_experssions == 2:
         argument = argv[1]
-        check_arugment(argument)
+        if argument == "--ddns":
+            ddns()
+        else:
+            check_arugment(argument)
     else:
         # error out
         print("Too many args. ")
