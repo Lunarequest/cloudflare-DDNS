@@ -5,7 +5,13 @@ from cloudflare_ddns.cloudflareddns import (
     ddns,
     verify_data,
 )
-from cloudflare_ddns.gen_settings import gen_settings, edit, edit_api, add_subdomain
+from cloudflare_ddns.gen_settings import (
+    gen_settings,
+    edit,
+    edit_api,
+    add_subdomain,
+    remove_subdomain,
+)
 from cloudflare_ddns.verify import verify
 from cloudflare_ddns.internals import read_data_record, read_data, write_data
 from sys import argv, exit
@@ -42,16 +48,18 @@ def edit_chose(arg):
         edit_api()
     else:
         print(
-            "usage update.py <args:optional>\n-h for this message\n--gen-settings to create settings.yml\n--ddns skip directly to DDNS updateing"
+            "usage update.py <args:optional>\n-h for this message\n--gen-settings to create settings.yml\n--ddns skip directly to DDNS updateing\n--edit to edit domains\n--edit-api to edit api key\n--add-subdomain to remove subdomain\n--remove-subdomain to remove subdoamin"
         )
 
 
 def subdomain(arg):
     if arg == "--add-subdomain":
         add_subdomain()
+    elif arg == "--remove-subdomain":
+        remove_subdomain()
     else:
         print(
-            "usage update.py <args:optional>\n-h for this message\n--gen-settings to create settings.yml\n--ddns skip directly to DDNS updateing"
+            "usage update.py <args:optional>\n-h for this message\n--gen-settings to create settings.yml\n--ddns skip directly to DDNS updateing\n--edit to edit domains\n--edit-api to edit api key\n--add-subdomain to remove subdomain\n--remove-subdomain to remove subdoamin"
         )
 
 
@@ -66,7 +74,7 @@ def check_arugment(argument):
         edit_chose(argument)
     else:
         print(
-            "usage update.py <args:optional>\n-h for this message\n--gen-settings to create settings.yml\n--ddns skip directly to DDNS updateing"
+            "usage update.py <args:optional>\n-h for this message\n--gen-settings to create settings.yml\n--ddns skip directly to DDNS updateing\n--edit to edit domains\n--edit-api to edit api key\n--add-subdomain to remove subdomain\n--remove-subdomain to remove subdoamin"
         )
 
 

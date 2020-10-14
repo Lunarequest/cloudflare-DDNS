@@ -62,3 +62,16 @@ def add_subdomain():
     data["subdomains"] = subdomains
     write_data(data)
     print("domain added run cloudflarddns to fetch record")
+
+
+def remove_subdomain():
+    data = read_data()
+    subdomains = data["subdomains"]
+    n = 1
+    for subdomain in subdomains:
+        print(f"{n}.{subdomain}")
+    x = input("input s.no to remove: ")
+    subdomain_to_remove = subdomains[x]
+    subdomains.remove(subdomain_to_remove)
+    data["subdomains"] = subdomains
+    write_data(data)
