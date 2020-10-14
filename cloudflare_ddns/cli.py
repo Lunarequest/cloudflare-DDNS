@@ -70,15 +70,19 @@ def check_arugment(argument):
         )
 
 
+def argv_handle(agrv):
+    argument = argv[1]
+    if argument == "--ddns":
+        ddns()
+    else:
+        check_arugment(argument)
+
+
 def check_args(num_experssions):
     if num_experssions == 1:
         getrecords()
     elif num_experssions == 2:
-        argument = argv[1]
-        if argument == "--ddns":
-            ddns()
-        else:
-            check_arugment(argument)
+        argv_handle(argv)
     else:
         # error out
         print("Too many args. ")
