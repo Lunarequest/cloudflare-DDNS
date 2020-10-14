@@ -53,9 +53,9 @@ def edit_chose(arg):
 
 
 def subdomain(arg):
-    if arg == "--add-subdomain":
+    if arg.contains("add"):
         add_subdomain()
-    elif arg == "--remove-subdomain":
+    elif arg.contains("--remove"):
         remove_subdomain()
     else:
         print(
