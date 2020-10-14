@@ -70,7 +70,7 @@ def remove_subdomain():
     n = 1
     for subdomain in subdomains:
         print(f"{n}.{subdomain}")
-    x = input("input s.no to remove: ")
+    x = input("input s.no to remove: ")  # nosec
     subdomain_to_remove = subdomains[x]
     subdomains.remove(subdomain_to_remove)
     data["subdomains"] = subdomains
