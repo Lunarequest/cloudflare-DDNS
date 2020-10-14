@@ -5,7 +5,7 @@ from cloudflare_ddns.cloudflareddns import (
     ddns,
     verify_data,
 )
-from cloudflare_ddns.gen_settings import gen_settings, edit, edit_api
+from cloudflare_ddns.gen_settings import gen_settings, edit, edit_api, add_subdomain
 from cloudflare_ddns.verify import verify
 from cloudflare_ddns.internals import read_data_record, read_data, write_data
 from sys import argv, exit
@@ -40,6 +40,19 @@ def edit_chose(arg):
         edit()
     elif arg == "--edit-api":
         edit_api()
+    else:
+        print(
+            "usage update.py <args:optional>\n-h for this message\n--gen-settings to create settings.yml\n--ddns skip directly to DDNS updateing"
+        )
+
+
+def subdomain(arg):
+    if arg == "--add-subdomain":
+        add_subdomain()
+    else:
+        print(
+            "usage update.py <args:optional>\n-h for this message\n--gen-settings to create settings.yml\n--ddns skip directly to DDNS updateing"
+        )
 
 
 def check_arugment(argument):
@@ -49,12 +62,14 @@ def check_arugment(argument):
         gen_settings()
     elif argument == "--verify":
         verify_record()
-    elif argument == "-h":
+    elif argument.contains("subdomain"):
+        subdomain(argument)
+    elif argument.contains("--edit"):
+        edit_chose(argument)
+    else:
         print(
             "usage update.py <args:optional>\n-h for this message\n--gen-settings to create settings.yml\n--ddns skip directly to DDNS updateing"
         )
-    elif argument.contains("--edit"):
-        edit_chose(argument)
 
 
 def main():

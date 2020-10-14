@@ -57,7 +57,7 @@ def edit_api():
 def add_subdomain():
     data = read_data()
     subdomains = data["subdomains"]
-    newdomain = input("enter new domain: ")
+    newdomain = input("enter new domain: ")  # nosec
     subdomains.append(newdomain)
     data["subdomains"] = subdomains
     write_data(data)
