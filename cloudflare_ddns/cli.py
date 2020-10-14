@@ -70,9 +70,7 @@ def check_arugment(argument):
         )
 
 
-def main():
-    check_connection
-    num_experssions = len(argv)
+def check_args(num_experssions):
     if num_experssions == 1:
         getrecords()
     elif num_experssions == 2:
@@ -84,6 +82,12 @@ def main():
     else:
         # error out
         print("Too many args. ")
+
+
+def main():
+    check_connection()
+    num_experssions = len(argv)
+    check_args(num_experssions)
 
 
 if __name__ == "__main__":
