@@ -52,3 +52,13 @@ def edit_api():
     if update.lower() == "y":
         data["api_key"] = input("enter new api key: ")  # nosec
     write_data(data)
+
+
+def add_subdomain():
+    data = read_data()
+    subdomains = data["subdomains"]
+    newdomain = input("enter new domain: ")
+    subdomains.append(newdomain)
+    data["subdomains"] = subdomains
+    write_data(data)
+    print("domain added run cloudflarddns to fetch record")
