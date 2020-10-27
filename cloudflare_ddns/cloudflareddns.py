@@ -125,7 +125,7 @@ def ddns():
             subdomains_id = settings["subdomains_id"]
             f.close()
             domains = []
-            domains.append("domain")
+            domains.append(domain)
             for domain_name in subdomains:  # updates each subdomain
                 domains.append(domain_name)
             record_ids = []
