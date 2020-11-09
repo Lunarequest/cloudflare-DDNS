@@ -9,7 +9,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="simple-cloudflare-ddns",
-    version="3.0.0",
+    version="3.0.1",
     description="A super simple cli tool to update dns records",
     long_description=README,
     long_description_content_type="text/markdown",
