@@ -53,9 +53,9 @@ def edit_chose(arg):
 
 
 def subdomain(arg):
-    if arg.contains("add"):
+    if "add" in arg:
         add_subdomain()
-    elif arg.contains("--remove"):
+    elif "--remove" in arg:
         remove_subdomain()
     else:
         print(
@@ -68,9 +68,9 @@ def check_arugment(argument):
         gen_settings()
     elif argument == "--verify":
         verify_record()
-    elif argument.contains("subdomain"):
+    elif "subdomain" in argument:
         subdomain(argument)
-    elif argument.contains("--edit"):
+    elif "--edit" in argument:
         edit_chose(argument)
     else:
         print(
