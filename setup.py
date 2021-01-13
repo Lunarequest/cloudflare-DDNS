@@ -9,7 +9,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="simple-cloudflare-ddns",
-    version="3.0.1",
+    version="4.0.0",
     description="A super simple cli tool to update dns records",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -26,6 +26,7 @@ setup(
         "Operating System :: POSIX :: Linux",
         "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
     ],
     packages=["cloudflare_ddns"],
     include_package_data=True,

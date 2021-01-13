@@ -2,7 +2,6 @@
 import requests
 import socket
 import json
-from requests.models import Response
 import yaml
 import logging
 from sys import exit
@@ -59,9 +58,10 @@ def ip_update(domain, zone_id, record_id, headers):
     # checks if resposne returns a 200
     if response.status_code == 200:
         print(f"updated {domain}")
+        return 0
     else:
         check_status(response)
-        exit(1)
+        return 1
 
 
 def make_request(headers, zone_id, record_id):
@@ -102,6 +102,8 @@ def update(domains, zone_id, record_ids, api_key):
         for domain in domains:
             logging.info("current ip: " + dynamic_ip, "cloudflare ip: " + ip)
             check = ip_update(domain, zone_id, record_ids[index], headers)
+            if check != 0:
+                exit(check)
             index += 1
         return True
 
@@ -119,7 +121,7 @@ def ddns():
         api_key = settings["api_key"]
         zone_id = settings["zone_id"]
         record_id = settings["record_id"]
-        # trys getting subdomains
+        # trys getting subdomains if it fails it mean the subdomains don't exist in setttings
         try:
             subdomains = settings["subdoamins"]
             subdomains_id = settings["subdomains_id"]
@@ -135,11 +137,17 @@ def ddns():
             update(domains, zone_id, record_ids, api_key)
         except:  # expects if subdomains do exist
             f.close()
-            domains = []
-            domains.append(domain)
-            record_ids = []
-            record_ids.append(record_id)
-            update(domains, zone_id, record_ids, api_key)
+            try:
+                domains = []
+                domains.append(domain)
+                record_ids = []
+                record_ids.append(record_id)
+                update(domains, zone_id, record_ids, api_key)
+            except:
+                print(
+                    "data does not exist in settings.yml did you run gensettings first?"
+                )
+                exit(1)
 
 
 def parse_data(data, domain):
@@ -195,6 +203,9 @@ def get_record_id(settings):
             x = parse_data(data, domains)
             domains_id.append(x)
             # checks if all domains ids have subdomains
+        if len(domains_id) == len(subdomain):
+            print("please repote this as a bug")
+            exit(2)
         data = {
             "api_key": api_key,
             "domain": domain,
