@@ -8,16 +8,14 @@ black = "*"
 nose2 = "*"
 mypy = "*"
 sphinx = "*"
+bandit = "*"
+flit = "*"
 
 [packages]
 requests = "*"
 pyyaml = "*"
-sockets = "*"
-flit = "*"
-rich = "*"
 argparse = "*"
 appdirs = "*"
-bandit = "*"
 
 [requires]
 python_version = "3.9"
