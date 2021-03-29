@@ -8,9 +8,9 @@ from .__init__ import CloudFlareConnection
 
 def gen_settings():
     """genrate ~/.config/cloudflareddns/settings.yml"""
-    api_key = input("enter your api key: ")
-    zone = input("Please enter your zone id: ")
-    num_domains = int(input("number of domains including the root domain: "))
+    api_key = input("enter your api key: ")  # nosec
+    zone = input("Please enter your zone id: ")  # nosec
+    num_domains = int(input("number of domains including the root domain: "))  # nosec
     domains = []
     if num_domains < 0:
         print("you need at least 1 domain")
@@ -18,7 +18,7 @@ def gen_settings():
     for i in range(0, num_domains):
         domain = ""
         while len(domain) == 0:
-            domain = input(f"input the domain for the {i+1} domain: ")
+            domain = input(f"input the domain for the {i+1} domain: ")  # nosec
         domains.append(domain)
     print("genrating record ids please wait.")
     records = []

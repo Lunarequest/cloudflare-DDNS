@@ -17,6 +17,7 @@ flit = "*"
 rich = "*"
 argparse = "*"
 appdirs = "*"
+bandit = "*"
 
 [requires]
 python_version = "3.9"
