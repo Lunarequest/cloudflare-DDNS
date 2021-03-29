@@ -23,9 +23,9 @@ requires = [
 ]
 description-file = "README.md"
 requires-python=">=python3.8"
-dist-name="cloudflare_ddns"
+dist-name="simple-cloudflare-ddns"
 [tool.flit.scripts]
-cloudflare_ddns = "cloudflare_ddns.cli:main"
+cloudflareddns = "cloudflare_ddns.cli:main"
 
 [tool.flit.sdist]
 include = ["README.md"]

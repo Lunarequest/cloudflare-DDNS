@@ -6,7 +6,6 @@ After=network.target
 User=A unprivallged user
 Group=a group
 WorkingDirectory=path to folder
-Environment="PATH=/usr/bin/"
-ExecStart=cloudflareddns --ddns
+ExecStart=/path/to/cloudflareddns
 [Install]
 WantedBy=multi-user.target
