@@ -1,16 +1,24 @@
 import yaml
 from appdirs import user_config_dir
+import os
+from typing import Dict
 
 
-def write_data(data):
+def write_data(data: Dict[str, str]):
     """
     writes data to settings.yml
-    :param data: (dict)
-    :return: None
+    Args:
+        data (dict): dict to convert to yaml to write to settings.yml
+
+    Returns:
+        None
     """
-    with open(f"{user_config_dir(appname='cloudflareddns')}/settings.yml", "w") as f:
-        data = yaml.dump(data)
-        f.write(data)
+    path = user_config_dir(appname="cloudflareddns")
+    if os.path.exists(path) == False:
+        os.mkdir(path)
+    with open(f"{path}/settings.yml", "w") as f:
+        yaml_to_write = yaml.dump(data)
+        f.write(yaml_to_write)
         f.close()
 
 

@@ -8,9 +8,20 @@ __version__ = "5.0.0"
 
 
 class CloudFlareConnection:
+    """
+    base class for working with the api
+    """
+
     def __init__(
         self, api_key: str, zone: str, domains: List[str], record_ids: List[str]
     ):
+        """
+        Args:
+            initalize data
+            api_key (str): api key for cloudflare api
+            zone (str): zone id in which domains exist
+            domains (list): list of domains
+        """
         if len(domains) == len(record_ids):
             self.api_key = api_key
             self.zone = zone
@@ -51,6 +62,16 @@ class CloudFlareConnection:
                     )
 
     def update_record(self, domain: str, ip: str, record: str) -> bool:
+        """
+        updates the ip of a given record
+        Args:
+            domain (str): domain to update
+            ip (str): ip to update too
+            record (str): record id to update
+
+        Returns:
+            status (bool): True is ip is updated, False if it wasn't
+        """
         data = {
             "type": "A",
             "name": f"{domain}",

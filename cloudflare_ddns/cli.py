@@ -7,6 +7,7 @@ from .__init__ import CloudFlareConnection
 
 
 def gen_settings():
+    """genrate ~/.config/cloudflareddns/settings.yml"""
     api_key = input("enter your api key: ")
     zone = input("Please enter your zone id: ")
     num_domains = int(input("number of domains including the root domain: "))
@@ -44,6 +45,7 @@ def gen_settings():
 
 
 def main():
+    """pareser arguments"""
     parser = argparse.ArgumentParser(prog="cloudflare-ddns")
     parser.add_argument(
         "--gensettings",
