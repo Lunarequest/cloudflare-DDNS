@@ -1,0 +1,31 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.metadata]
+module = "cloudflare_ddns"
+author = "Nullrequest"
+author-email = "advaith.madhukar@gmail.com"
+home-page = "https://github.com/advaithm/cloudflare-DDNS"
+classifiers = ["Development Status :: 5 - Production/Stable",
+                "Environment :: Console",
+            "Intended Audience :: Customer Service",
+            "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+            "Natural Language :: English",
+            "Operating System :: POSIX :: Linux",
+            "Programming Language :: Python :: 3 :: Only",
+            "Programming Language :: Python :: 3.8",
+            "Programming Language :: Python :: 3.9",]
+requires = [
+    "appdirs >=1.4.4",
+    "requests>=2.25.1",
+    "PyYAML==5.4.1; python_version in '3.8 3.9'"
+]
+description-file = "README.md"
+requires-python=">=python3.8"
+dist-name="cloudflare_ddns"
+[tool.flit.scripts]
+cloudflare_ddns = "cloudflare_ddns.cli:main"
+
+[tool.flit.sdist]
+include = ["README.md"]

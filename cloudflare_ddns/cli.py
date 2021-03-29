@@ -1,106 +1,64 @@
 #!/usr/bin/python
-from cloudflare_ddns.cloudflareddns import (
-    is_connected,
-    get_record_id,
-    ddns,
-    verify_data,
-)
-from cloudflare_ddns.gen_settings import (
-    gen_settings,
-    edit,
-    edit_api,
-    add_subdomain,
-    remove_subdomain,
-)
-from cloudflare_ddns.verify import verify
-from cloudflare_ddns.internals import read_data_record, read_data, write_data
-from sys import argv, exit
+import argparse
+from sys import exit
+from cloudflare_ddns.utils import write_data, load_data
+import requests
+from .__init__ import CloudFlareConnection
 
 
-def getrecords():
-    settings = read_data()
-    data = get_record_id(settings)
-    data = verify_data(data)
+def gen_settings():
+    api_key = input("enter your api key: ")
+    zone = input("Please enter your zone id: ")
+    num_domains = int(input("number of domains including the root domain: "))
+    domains = []
+    if num_domains < 0:
+        print("you need at least 1 domain")
+        exit(1)
+    for i in range(0, num_domains):
+        domain = ""
+        while len(domain) == 0:
+            domain = input(f"input the domain for the {i+1} domain: ")
+        domains.append(domain)
+    print("genrating record ids please wait.")
+    records = []
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+    response = requests.get(
+        f"https://api.cloudflare.com/client/v4/zones/{zone}/dns_records",
+        headers=headers,
+    )
+    for domain in domains:
+        failed = True
+        for record in response.json():
+            if record["name"] == domain:
+                records.append(record)
+                failed = False
+        if failed == True:
+            print(f"{domain} did not have a record exiting")
+            exit(1)
+
+    data = {"zone": zone, "api_key": api_key, "domains": domains, "records": records}
     write_data(data)
-    ddns()
-
-
-def verify_record():
-    settings = read_data_record()
-    failed = verify(settings)
-    if failed == True:
-        print("settings has failed the intgerty check")
-        exit(0)
-    print("settings has passed the intgerty check")
-    # check for usage info handel
-
-
-def check_connection():
-    connected = False
-    while connected is False:
-        connected = is_connected()
-
-
-def edit_chose(arg):
-    if arg == "--edit":
-        edit()
-    elif arg == "--edit-api":
-        edit_api()
-    else:
-        print(
-            "usage update.py <args:optional>\n-h for this message\n--gen-settings to create settings.yml\n--ddns skip directly to DDNS updateing\n--edit to edit domains\n--edit-api to edit api key\n--add-subdomain to remove subdomain\n--remove-subdomain to remove subdoamin"
-        )
-
-
-def subdomain(arg):
-    if "add" in arg:
-        add_subdomain()
-    elif "--remove" in arg:
-        remove_subdomain()
-    else:
-        print(
-            "usage update.py <args:optional>\n-h for this message\n--gen-settings to create settings.yml\n--ddns skip directly to DDNS updateing\n--edit to edit domains\n--edit-api to edit api key\n--add-subdomain to remove subdomain\n--remove-subdomain to remove subdoamin"
-        )
-
-
-def check_arugment(argument):
-    if argument == "--gen-settings":
-        gen_settings()
-    elif argument == "--verify":
-        verify_record()
-    elif "subdomain" in argument:
-        subdomain(argument)
-    elif "--edit" in argument:
-        edit_chose(argument)
-    else:
-        print(
-            "usage update.py <args:optional>\n-h for this message\n--gen-settings to create settings.yml\n--ddns skip directly to DDNS updateing\n--edit to edit domains\n--edit-api to edit api key\n--add-subdomain to remove subdomain\n--remove-subdomain to remove subdoamin"
-        )
-
-
-def argv_handle(agrv):
-    argument = argv[1]
-    if argument == "--ddns":
-        ddns()
-    else:
-        check_arugment(argument)
-
-
-def check_args(num_experssions):
-    if num_experssions == 1:
-        getrecords()
-    elif num_experssions == 2:
-        argv_handle(argv)
-    else:
-        # error out
-        print("Too many args. ")
 
 
 def main():
-    check_connection()
-    num_experssions = len(argv)
-    check_args(num_experssions)
-
-
-if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(prog="cloudflare-ddns")
+    parser.add_argument(
+        "--gensettings",
+        action="store_true",
+        help="Genrate settings.yml, will be stored in",
+    )
+    args = parser.parse_args()
+    if args.gensettings == True:
+        gen_settings()
+    else:
+        settings = load_data()
+        connection = CloudFlareConnection(
+            settings["api_key"],
+            settings["zone"],
+            settings["domains"],
+            settings["records"],
+        )
+        connection.update_ips()

@@ -30,7 +30,7 @@ setup(
     ],
     packages=["cloudflare_ddns"],
     include_package_data=True,
-    install_requires=["requests", "pyyaml", "sockets"],
+    install_requires=["requests", "pyyaml"],
     entry_points={
         "console_scripts": [
             "cloudflareddns=cloudflare_ddns.cli:main",
