@@ -46,7 +46,7 @@ def remove_domain(path: str):
     for i in settings["domains"]:
         print(f"{count}. {i}")
     domain_to_remove = int(
-        input("input the number next to the domain you want to remove: ")
+        input("input the number next to the domain you want to remove: ")  # nosec
     )
     settings["domains"].pop(domain_to_remove)
     headers = {
@@ -60,7 +60,7 @@ def remove_domain(path: str):
 
 def update_api_key(path: str):
     settings = load_data(path)
-    settings["api_key"] = input("please input the new api key: ")
+    settings["api_key"] = input("please input the new api key: ")  # nosec
     print("verifying api key")  # nosec
     valid_key = veirfy_api_key(settings["api_key"])
     if valid_key == False:

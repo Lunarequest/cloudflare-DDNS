@@ -64,14 +64,13 @@ def genrate_record_ids(
         headers=headers,
     ).json()["result"]
     for domain in domains:
-        record = in_array(domain,response)
+        record = in_array(domain, response)
         if record:
             records.append(record)
     return records
 
 
 def in_array(domain: str, response) -> Optional[str]:
-        for record in response:
-            if record["name"] == domain and record["type"] == "A":
-                return record
-    return None
+    for record in response:
+        if record["name"] == domain and record["type"] == "A":
+            return record
