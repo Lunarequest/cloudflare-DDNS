@@ -41,8 +41,9 @@ class CloudFlareConnection:
         )
         return response
 
-    def update_ips(self):
+    def update_ips(self) -> bool:
         current_ip = requests.get("http://api64.ipify.org?format=json").json()["ip"]
+        domains_updated = False
         for record in self.record_ids:
             response = self.make_request(record)
             ip = response.json()["result"]["content"]
@@ -60,10 +61,8 @@ class CloudFlareConnection:
                     logging.info(
                         f"updated ip for {self.domains[self.record_ids.index(record)]}"
                     )
-            else:
-                print(
-                    f"IP was up to date for {self.domains[self.record_ids.index(record)]}"
-                )
+                    domains_updated = True
+        return domains_updated
 
     def update_record(self, domain: str, ip: str, record: str) -> bool:
         """

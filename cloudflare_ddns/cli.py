@@ -104,7 +104,9 @@ def main():
             settings["domains"],
             settings["records"],
         )
-        connection.update_ips()
+        updated = connection.update_ips()
+        if updated:
+            print("updated domains to new ip")
 
 
 if __name__ == "__main__":
