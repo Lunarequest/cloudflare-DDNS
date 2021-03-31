@@ -62,9 +62,9 @@ def genrate_record_ids(
     response = requests.get(
         f"https://api.cloudflare.com/client/v4/zones/{zone}/dns_records",
         headers=headers,
-    )
+    ).json()["result"]
     for domain in domains:
-        for record in response.json()["result"]:
+        for record in response:
             if record["name"] == domain and record["type"] == "A":
                 records.append(record["id"])
     return records
