@@ -1,6 +1,6 @@
 import yaml
 import os
-from typing import Dict, List
+from typing import Dict, List, Optional
 import requests
 
 
@@ -64,7 +64,14 @@ def genrate_record_ids(
         headers=headers,
     ).json()["result"]
     for domain in domains:
+        record = in_array(domain,response)
+        if record:
+            records.append(record)
+    return records
+
+
+def in_array(domain: str, response) -> Optional[str]:
         for record in response:
             if record["name"] == domain and record["type"] == "A":
-                records.append(record["id"])
-    return records
+                return record
+    return None
