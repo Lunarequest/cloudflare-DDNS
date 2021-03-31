@@ -1,9 +1,9 @@
 #!/usr/bin/python
 import argparse
 from sys import exit
-from cloudflare_ddns.utils import write_data, load_data
+from utils import write_data, load_data, veirfy_api_key
 import requests
-from cloudflare_ddns.__init__ import CloudFlareConnection
+from __init__ import CloudFlareConnection
 from appdirs import user_config_dir
 
 
@@ -15,16 +15,10 @@ def gen_settings(path):
         "Content-Type": "application/json",
     }
     print("verifying api key")
-    response = requests.get(
-        "https://api.cloudflare.com/client/v4/user/tokens/verify", headers=headers
-    )
-    if response.status_code != 200:
-        print("error verifying key exiting")
+    valid_key = veirfy_api_key(api_key)
+    if valid_key == False:
+        print("the provied key was not valid")
         exit(1)
-    else:
-        if response.json()["success"] != True:
-            print("error verifying key exiting")
-            exit(1)
     print("verified api key")
     zone = input("Please enter your zone id: ")  # nosec
     num_domains = int(input("number of domains including the root domain: "))  # nosec
@@ -58,6 +52,19 @@ def gen_settings(path):
     write_data(data, path)
 
 
+def update_api_key(path):
+    settings = load_data(path)
+    settings["api_key"] = input("please input the new api key: ")
+    print("verifying api key")
+    valid_key = veirfy_api_key(settings["api_key"])
+    if valid_key == False:
+        print("the provied key was not valid")
+        exit(1)
+    print("verified api key")
+    write_data(settings, path)
+    print("updated api key")
+
+
 def main():
     """pareser arguments"""
     parser = argparse.ArgumentParser(prog="cloudflare-ddns")
@@ -69,19 +76,22 @@ def main():
     parser.add_argument(
         "-f", nargs="?", const=None, type=str, help="force path for settings.yml"
     )
+    parser.add_argument("--updateapikey", action="store_true", help="update api key")
     args = parser.parse_args()
-    if args.gensettings == True:
-        if args.f == None:
-            path = f"{user_config_dir(appname='cloudflareddns')}/settings.yml"
-            gen_settings(path)
-        else:
-            gen_settings(args.f)
+    if args.f == None:
+        path = f"{user_config_dir(appname='cloudflareddns')}/settings.yml"
+        settings = load_data(path)
     else:
-        if args.f == None:
-            path = f"{user_config_dir(appname='cloudflareddns')}/settings.yml"
-            settings = load_data(path)
-        else:
-            settings = load_data(path=args.f)
+        path = args.f
+
+    if args.updateapikey == True:
+        update_api_key(path)
+        exit()
+
+    if args.gensettings == True:
+        gen_settings(path)
+    else:
+        settings = load_data(path=args.f)
         connection = CloudFlareConnection(
             settings["api_key"],
             settings["zone"],

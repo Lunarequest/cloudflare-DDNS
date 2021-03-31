@@ -2,7 +2,7 @@
 import requests
 from typing import List
 import logging
-from .Exceptions import LenMissmatch
+from Exceptions import LenMissmatch
 
 __version__ = "5.0.0"
 
@@ -60,6 +60,10 @@ class CloudFlareConnection:
                     logging.info(
                         f"updated ip for {self.domains[self.record_ids.index(record)]}"
                     )
+            else:
+                print(
+                    f"IP was up to date for {self.domains[self.record_ids.index(record)]}"
+                )
 
     def update_record(self, domain: str, ip: str, record: str) -> bool:
         """

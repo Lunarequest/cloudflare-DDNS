@@ -1,6 +1,7 @@
 import yaml
 import os
 from typing import Dict, Optional
+import requests
 
 
 def write_data(data, path):
@@ -21,14 +22,34 @@ def write_data(data, path):
         f.close()
 
 
-def load_data(path):
+def load_data(path) -> Dict[str, str]:
     """
     function to read data from path
     Args:
         path (str):(optional) path to load data from.
+    Returns:
+        settings (Dict): setttings read from the file
     """
     with open(path, "r") as f:
         # opens settings.yml and loads
         settings = yaml.safe_load(f.read())
     f.close()
     return settings
+
+
+def veirfy_api_key(api_key: str) -> bool:
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+    response = requests.get(
+        "https://api.cloudflare.com/client/v4/user/tokens/verify", headers=headers
+    )
+    if response.status_code != 200:
+        print("error verifying key exiting")
+        return False
+    else:
+        if response.json()["success"] != True:
+            print("error verifying key exiting")
+            return False
+    return True
