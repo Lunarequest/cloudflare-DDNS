@@ -2,7 +2,7 @@
 import requests
 from typing import List
 import logging
-from Exceptions import LenMissmatch
+from .Exceptions import LenMissmatch
 
 __version__ = "5.0.0"
 
@@ -36,7 +36,7 @@ class CloudFlareConnection:
 
     def make_request(self, record_id):
         response = requests.get(
-            f"https://api.cloudflare.com/client/v4/zones/{self.zone_id}/dns_records/{record_id}",
+            f"https://api.cloudflare.com/client/v4/zones/{self.zone}/dns_records/{record_id}",
             headers=self.headers,
         )
         return response

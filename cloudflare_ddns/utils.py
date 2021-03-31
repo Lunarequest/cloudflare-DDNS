@@ -22,7 +22,7 @@ def write_data(data: Dict[str, str], path: str):
         f.close()
 
 
-def load_data(path: str) -> Dict[str, str]:
+def load_data(path: str) -> Dict:
     """
     function to read data from path
     Args:
@@ -56,7 +56,7 @@ def veirfy_api_key(api_key: str) -> bool:
 
 
 def genrate_record_ids(
-    domains: List[str], headers: dict[str, str], zone_id: str
+    domains: List[str], headers: dict[str, str], zone: str
 ) -> List[str]:
     records = []
     response = requests.get(

@@ -1,10 +1,9 @@
 #!/usr/bin/python
 import argparse
 from sys import exit
-from utils import write_data, load_data, veirfy_api_key, genrate_record_ids
-import requests
-from __init__ import CloudFlareConnection
-from Exceptions import LenMissmatch
+from .utils import write_data, load_data, veirfy_api_key, genrate_record_ids
+from .__init__ import CloudFlareConnection
+from .Exceptions import LenMissmatch
 from appdirs import user_config_dir
 
 
@@ -33,7 +32,7 @@ def gen_settings(path):
             domain = input(f"input the domain for the {i+1} domain: ")  # nosec
         domains.append(domain)
     print("genrating record ids please wait.")
-    records = genrate_record_ids
+    records = genrate_record_ids(domains, headers, zone)
     if len(records) != len(domains):
         raise LenMissmatch
     data = {"zone": zone, "api_key": api_key, "domains": domains, "records": records}
