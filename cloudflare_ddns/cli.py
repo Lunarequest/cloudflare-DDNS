@@ -41,6 +41,9 @@ def gen_settings(path):
 
 def remove_domain(path: str):
     settings = load_data(path)
+    if len(settings["domains"]) == 1:
+        print("you need at least one domain")
+        exit(1)
     count = 1
     for i in settings["domains"]:
         print(f"{count}. {i}")
