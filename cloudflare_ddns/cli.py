@@ -82,6 +82,9 @@ def main():
         "-f", nargs="?", const=None, type=str, help="force path for settings.yml"
     )
     parser.add_argument("--updateapikey", action="store_true", help="update api key")
+    parser.add_argument(
+        "--removedomain", action="store_true", help="remove a domain from settings.yml"
+    )
     args = parser.parse_args()
     if args.f == None:
         path = f"{user_config_dir(appname='cloudflareddns')}/settings.yml"
@@ -91,6 +94,10 @@ def main():
 
     if args.updateapikey == True:
         update_api_key(path)
+        exit()
+
+    if args.removedomain == True:
+        remove_domain(path)
         exit()
 
     if args.gensettings == True:
