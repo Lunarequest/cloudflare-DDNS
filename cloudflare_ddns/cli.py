@@ -1,9 +1,10 @@
 #!/usr/bin/python
 import argparse
 from sys import exit
-from utils import write_data, load_data, veirfy_api_key
+from utils import write_data, load_data, veirfy_api_key, genrate_record_ids
 import requests
 from __init__ import CloudFlareConnection
+from Exceptions import LenMissmatch
 from appdirs import user_config_dir
 
 
@@ -32,30 +33,35 @@ def gen_settings(path):
             domain = input(f"input the domain for the {i+1} domain: ")  # nosec
         domains.append(domain)
     print("genrating record ids please wait.")
-    records = []
-
-    response = requests.get(
-        f"https://api.cloudflare.com/client/v4/zones/{zone}/dns_records",
-        headers=headers,
-    )
-    for domain in domains:
-        failed = True
-        for record in response.json()["result"]:
-            if record["name"] == domain and record["type"] == "A":
-                records.append(record["id"])
-                failed = False
-        if failed == True:
-            print(f"{domain} did not have a record exiting")
-            exit(1)
-
+    records = genrate_record_ids
+    if len(records) != len(domains):
+        raise LenMissmatch
     data = {"zone": zone, "api_key": api_key, "domains": domains, "records": records}
     write_data(data, path)
 
 
-def update_api_key(path):
+def remove_domain(path: str):
+    settings = load_data(path)
+    count = 1
+    for i in settings["domains"]:
+        print(f"{count}. {i}")
+    domain_to_remove = int(
+        input("input the number next to the domain you want to remove: ")
+    )
+    settings["domains"].pop(domain_to_remove)
+    headers = {
+        "Authorization": f"Bearer {settings['api_key']}",
+        "Content-Type": "application/json",
+    }
+    records = genrate_record_ids(settings["domains"], headers, settings["zone"])
+    settings["records"] = records
+    write_data(settings, path)
+
+
+def update_api_key(path: str):
     settings = load_data(path)
     settings["api_key"] = input("please input the new api key: ")
-    print("verifying api key")
+    print("verifying api key")  # nosec
     valid_key = veirfy_api_key(settings["api_key"])
     if valid_key == False:
         print("the provied key was not valid")

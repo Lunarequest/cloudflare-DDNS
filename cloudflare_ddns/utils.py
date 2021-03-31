@@ -1,10 +1,10 @@
 import yaml
 import os
-from typing import Dict, Optional
+from typing import Dict, List
 import requests
 
 
-def write_data(data, path):
+def write_data(data: Dict[str, str], path: str):
     """
     writes data to path
     Args:
@@ -22,7 +22,7 @@ def write_data(data, path):
         f.close()
 
 
-def load_data(path) -> Dict[str, str]:
+def load_data(path: str) -> Dict[str, str]:
     """
     function to read data from path
     Args:
@@ -53,3 +53,18 @@ def veirfy_api_key(api_key: str) -> bool:
             print("error verifying key exiting")
             return False
     return True
+
+
+def genrate_record_ids(
+    domains: List[str], headers: dict[str, str], zone_id: str
+) -> List[str]:
+    records = []
+    response = requests.get(
+        f"https://api.cloudflare.com/client/v4/zones/{zone}/dns_records",
+        headers=headers,
+    )
+    for domain in domains:
+        for record in response.json()["result"]:
+            if record["name"] == domain and record["type"] == "A":
+                records.append(record["id"])
+    return records
