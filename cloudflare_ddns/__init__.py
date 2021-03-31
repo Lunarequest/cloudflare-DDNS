@@ -34,17 +34,17 @@ class CloudFlareConnection:
         else:
             raise LenMissmatch
 
-    def update_ips(self):
-        def make_request(headers, zone_id, record_id):
-            response = requests.get(
-                f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records/{record_id}",
-                headers=headers,
-            )
-            return response
+    def make_request(self, record_id):
+        response = requests.get(
+            f"https://api.cloudflare.com/client/v4/zones/{self.zone_id}/dns_records/{record_id}",
+            headers=self.headers,
+        )
+        return response
 
+    def update_ips(self):
         current_ip = requests.get("http://api64.ipify.org?format=json").json()["ip"]
         for record in self.record_ids:
-            response = make_request(self.headers, self.zone, record)
+            response = self.make_request(record)
             ip = response.json()["result"]["content"]
             if ip != current_ip:
                 if (
