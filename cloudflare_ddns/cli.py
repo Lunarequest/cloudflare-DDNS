@@ -123,15 +123,11 @@ def main():
 
     if args.updateapikey == True:
         update_api_key(path)
-        exit()
-
-    if args.removedomain == True:
+    elif args.removedomain == True:
         remove_domain(path)
-        exit()
-    if args.adddomain == True:
+    elif args.adddomain == True:
         add_domain(path)
-        exit()
-    if args.gensettings == True:
+    elif args.gensettings == True:
         gen_settings(path)
     else:
         settings = load_data(path=args.f)
