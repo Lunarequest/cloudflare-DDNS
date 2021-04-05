@@ -8,7 +8,11 @@ from appdirs import user_config_dir
 
 
 def gen_settings(path):
-    """genrate ~/.config/cloudflareddns/settings.yml"""
+    """
+    genrate settings.yml
+    Args:
+        path(str): path to settings.yml
+    """
     api_key = input("enter your api key: ")  # nosec
     headers = {
         "Authorization": f"Bearer {api_key}",
@@ -40,6 +44,11 @@ def gen_settings(path):
 
 
 def remove_domain(path: str):
+    """
+    remove domain from settings.yml
+    Args:
+        path (str): path to settings.yml
+    """
     settings = load_data(path)
     if len(settings["domains"]) == 1:
         print("you need at least one domain")
@@ -59,6 +68,22 @@ def remove_domain(path: str):
     settings["records"] = records
     write_data(settings, path)
 
+
+def add_domain(path):
+    """
+    function to add domain, 
+    Args:
+        path (str): path to settings.yml
+    """
+    settings = load_data(path)
+    new_domain = input("input the domain: ")
+    settings["domains"].append(new_domain)
+    headers = {
+        "Authorization": f"Bearer {settings['api_key']}",
+        "Content-Type": "application/json",
+    }
+    settings["records"] = genrate_record_ids(settings["domains"],headers,settings["zone"])
+    write_data(settings,path)
 
 def update_api_key(path: str):
     settings = load_data(path)
@@ -88,6 +113,7 @@ def main():
     parser.add_argument(
         "--removedomain", action="store_true", help="remove a domain from settings.yml"
     )
+    parser.add_argument("--adddomain",action="store_true", help="add a domain too settings.yml")
     args = parser.parse_args()
     if args.f == None:
         path = f"{user_config_dir(appname='cloudflareddns')}/settings.yml"
@@ -102,7 +128,9 @@ def main():
     if args.removedomain == True:
         remove_domain(path)
         exit()
-
+    if args.adddomain == True:
+        add_domain(path)
+        exit()
     if args.gensettings == True:
         gen_settings(path)
     else:
