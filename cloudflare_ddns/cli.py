@@ -76,7 +76,7 @@ def add_domain(path):
         path (str): path to settings.yml
     """
     settings = load_data(path)
-    new_domain = input("input the domain: ")
+    new_domain = input("input the domain: ")# nosec
     settings["domains"].append(new_domain)
     headers = {
         "Authorization": f"Bearer {settings['api_key']}",
