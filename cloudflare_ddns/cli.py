@@ -97,6 +97,19 @@ def update_api_key(path: str):
     write_data(settings, path)
     print("updated api key")
 
+def update_domain(path:str):
+    settings = load_data(path)
+    if len(settings["domains"]) == 1:
+        print("you need at least one domain")
+        exit(1)
+    count = 1
+    for i in settings["domains"]:
+        print(f"{count}. {i}")
+    domain_to_remove = int(
+        input("input the number next to the domain you want to remove: ")  # nosec
+    )
+    settings["domains"][domain_to_remove] = input(f"enter new value for domain {settings['domains'][domain_to_remove]}: ") # nosec
+    write_data(settings,path)
 
 def main():
     """pareser arguments"""
@@ -113,6 +126,7 @@ def main():
     parser.add_argument(
         "--removedomain", action="store_true", help="remove a domain from settings.yml"
     )
+    parser.add_argument("--updatedomain",action="store_true", help="updated a domain from settings.yml")
     parser.add_argument("--adddomain",action="store_true", help="add a domain too settings.yml")
     args = parser.parse_args()
     if args.f == None:
@@ -127,6 +141,8 @@ def main():
         remove_domain(path)
     elif args.adddomain == True:
         add_domain(path)
+    elif args.updatedomain == True:
+        update_domain(path)
     elif args.gensettings == True:
         gen_settings(path)
     else:
