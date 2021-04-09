@@ -2,7 +2,7 @@
 import argparse
 from sys import exit
 from .utils import write_data, load_data, veirfy_api_key, genrate_record_ids
-from .__init__ import CloudFlareConnection
+from .cloudflare import CloudFlareConnection
 from .Exceptions import LenMissmatch
 from appdirs import user_config_dir
 
@@ -146,7 +146,7 @@ def main():
     elif args.gensettings == True:
         gen_settings(path)
     else:
-        settings = load_data(path=args.f)
+        settings = load_data(path)
         connection = CloudFlareConnection(
             settings["api_key"],
             settings["zone"],
