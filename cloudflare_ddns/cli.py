@@ -38,7 +38,7 @@ def gen_settings(path):
     print("genrating record ids please wait.")
     records = genrate_record_ids(domains, headers, zone)
     if len(records) != len(domains):
-        raise LenMissmatch
+        raise LenMissmatch("number of domains is not equal to the number of records")
     data = {"zone": zone, "api_key": api_key, "domains": domains, "records": records}
     write_data(data, path)
 
