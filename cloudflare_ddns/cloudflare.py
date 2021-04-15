@@ -4,7 +4,6 @@ import logging
 from .Exceptions import LenMissmatch
 
 
-
 class CloudFlareConnection:
     """
     base class for working with the api
@@ -40,7 +39,9 @@ class CloudFlareConnection:
         return response
 
     def update_ips(self) -> bool:
-        current_ip = requests.get("http://api64.ipify.org?format=json").json()["ip"]
+        current_ip = requests.get("https://wtfismyip.com/json").json()[
+            "YourFuckingIPAddress"
+        ]
         domains_updated = False
         for record in self.record_ids:
             response = self.make_request(record)
