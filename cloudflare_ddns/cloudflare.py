@@ -49,7 +49,7 @@ class CloudFlareConnection:
             if ip != current_ip:
                 if (
                     self.update_record(
-                        self.domains[self.record_ids.index(record)], ip, record
+                        self.domains[self.record_ids.index(record)], current_ip, record
                     )
                     == False
                 ):
@@ -81,6 +81,7 @@ class CloudFlareConnection:
             "ttl": 1,
             "proxied": True,
         }
+        print(data)
         response = requests.put(
             f"https://api.cloudflare.com/client/v4/zones/{self.zone}/dns_records/{record}",
             headers=self.headers,

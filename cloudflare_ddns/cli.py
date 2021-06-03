@@ -71,19 +71,22 @@ def remove_domain(path: str):
 
 def add_domain(path):
     """
-    function to add domain, 
+    function to add domain,
     Args:
         path (str): path to settings.yml
     """
     settings = load_data(path)
-    new_domain = input("input the domain: ")# nosec
+    new_domain = input("input the domain: ")  # nosec
     settings["domains"].append(new_domain)
     headers = {
         "Authorization": f"Bearer {settings['api_key']}",
         "Content-Type": "application/json",
     }
-    settings["records"] = genrate_record_ids(settings["domains"],headers,settings["zone"])
-    write_data(settings,path)
+    settings["records"] = genrate_record_ids(
+        settings["domains"], headers, settings["zone"]
+    )
+    write_data(settings, path)
+
 
 def update_api_key(path: str):
     settings = load_data(path)
@@ -97,7 +100,8 @@ def update_api_key(path: str):
     write_data(settings, path)
     print("updated api key")
 
-def update_domain(path:str):
+
+def update_domain(path: str):
     settings = load_data(path)
     if len(settings["domains"]) == 1:
         print("you need at least one domain")
@@ -108,8 +112,11 @@ def update_domain(path:str):
     domain_to_remove = int(
         input("input the number next to the domain you want to remove: ")  # nosec
     )
-    settings["domains"][domain_to_remove] = input(f"enter new value for domain {settings['domains'][domain_to_remove]}: ") # nosec
-    write_data(settings,path)
+    settings["domains"][domain_to_remove] = input(
+        f"enter new value for domain {settings['domains'][domain_to_remove]}: "
+    )  # nosec
+    write_data(settings, path)
+
 
 def main():
     """pareser arguments"""
@@ -126,8 +133,12 @@ def main():
     parser.add_argument(
         "--removedomain", action="store_true", help="remove a domain from settings.yml"
     )
-    parser.add_argument("--updatedomain",action="store_true", help="updated a domain from settings.yml")
-    parser.add_argument("--adddomain",action="store_true", help="add a domain too settings.yml")
+    parser.add_argument(
+        "--updatedomain", action="store_true", help="updated a domain from settings.yml"
+    )
+    parser.add_argument(
+        "--adddomain", action="store_true", help="add a domain too settings.yml"
+    )
     args = parser.parse_args()
     if args.f == None:
         path = f"{user_config_dir(appname='cloudflareddns')}/settings.yml"
